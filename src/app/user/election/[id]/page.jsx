@@ -16,7 +16,15 @@ const ElectionDetails = () => {
   useEffect(() => {
     (async () => {
       const response = await axios(`/api/elections/${electionId}`);
-      setElectionData(response.data.election);
+      setElectionData({
+        ...response.data.election,
+        rules: [
+          "Each student may cast one vote only",
+          "Voting requires valid student ID verification",
+          "Results will be announced within 24 hours of election close",
+          "Any disputes must be filed within 48 hours of results announcement",
+        ],
+      });
     })();
   }, []);
 
@@ -33,8 +41,8 @@ const ElectionDetails = () => {
       </Button>
       <ElectionHeader election={electionData} />
       <div className="grid gap-6 md:grid-cols-3">
-        <LeftColumn />
-        <RightColumn />
+        <LeftColumn election={electionData} />
+        <RightColumn election={electionData} />
       </div>
     </div>
   );

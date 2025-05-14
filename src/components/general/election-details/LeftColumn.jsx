@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDate, electionData } from "@/lib/index";
+import { formatDate } from "@/lib/index";
 import { Calendar, HelpCircle, Info, Shield, Timer, Users } from "lucide-react";
 import React from "react";
 
-const LeftColumn = () => {
+const LeftColumn = ({ election }) => {
   return (
     <div className="md:col-span-1 space-y-6">
       <Card>
@@ -21,7 +21,7 @@ const LeftColumn = () => {
             </h3>
             <p className="flex items-center gap-1.5 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              {formatDate(electionData.startTime)}
+              {formatDate(election.startTime)}
             </p>
           </div>
           <div>
@@ -30,7 +30,7 @@ const LeftColumn = () => {
             </h3>
             <p className="flex items-center gap-1.5 text-sm">
               <Timer className="h-4 w-4 text-muted-foreground" />
-              {formatDate(electionData.endTime)}
+              {formatDate(election.endTime)}
             </p>
           </div>
           <div>
@@ -39,7 +39,7 @@ const LeftColumn = () => {
             </h3>
             <p className="flex items-center gap-1.5 text-sm">
               <Users className="h-4 w-4 text-muted-foreground" />
-              {electionData.eligibleVoters.toLocaleString()}
+              {election.eligibleVoters || 50}
             </p>
           </div>
           <Separator />
@@ -48,7 +48,7 @@ const LeftColumn = () => {
               Election Rules
             </h3>
             <ul className="space-y-2 text-sm">
-              {electionData.rules.map((rule, index) => (
+              {election?.rules?.map((rule, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <Shield className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
                   <span>{rule}</span>
