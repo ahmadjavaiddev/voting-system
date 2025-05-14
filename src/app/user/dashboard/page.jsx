@@ -6,6 +6,7 @@ import { mockElections } from "@/lib/index";
 import LiveElectionCard from "@/components/general/LiveElectionCard";
 import UpcomingElectionCard from "@/components/general/UpcomingElectionCard";
 import PreviousElectionCard from "@/components/general/PreviousElectionCard";
+import axios from "axios";
 
 export default function UserDashboard() {
   const [liveElections, setLiveElections] = useState([]);
@@ -27,13 +28,17 @@ export default function UserDashboard() {
     );
   };
 
+  const fetchLiveElectionsData = async () => {
+    try {
+      const response = await axios("/api/elections/live");
+      setLiveElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the Data ::", error.message);
+    }
+  };
+
   useEffect(() => {
-    fetch("/api/elections/live")
-      .then((res) => res.json())
-      .then((data) => setLiveElections(data.elections || []));
-    fetch("/api/elections/history")
-      .then((res) => res.json())
-      .then((data) => setHistory(data.elections || []));
+    fetchLiveElectionsData();
   }, []);
 
   const handleVote = async (electionId, party) => {
@@ -82,9 +87,9 @@ export default function UserDashboard() {
         {/* Live Elections */}
         <TabsContent value="live" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filterElections(mockElections.live).length > 0 ? (
-              filterElections(mockElections.live).map((election) => (
-                <LiveElectionCard election={election} key={election.id} />
+            {liveElections?.length > 0 ? (
+              liveElections?.map((election) => (
+                <LiveElectionCard election={election} key={election._id} />
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">

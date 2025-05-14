@@ -1,3 +1,4 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,9 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDate, getTimeLeft } from "@/lib";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const LiveElectionCard = ({ election }) => {
+  const router = useRouter();
+  console.log("election in Card ::", election);
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">
@@ -50,7 +55,9 @@ const LiveElectionCard = ({ election }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Cast Your Vote</Button>
+        <Link href={`/user/election/${election._id}`} className="w-full">
+          <Button className="w-full">Cast Your Vote</Button>
+        </Link>
       </CardFooter>
     </Card>
   );

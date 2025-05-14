@@ -20,14 +20,14 @@ export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
 
   // Fetch unapproved users (for demo, fetch all users and filter client-side)
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await axios.get("/api/admin/users");
-      const data = res.data;
-      setUsers(data.users || []);
-    };
-    fetchUsers();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const res = await axios.get("/api/admin/users");
+  //     const data = res.data;
+  //     setUsers(data.users || []);
+  //   };
+  //   fetchUsers();
+  // }, []);
 
   // const handleApprove = async (userId) => {
   //   setLoading(true);
