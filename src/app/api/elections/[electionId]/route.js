@@ -1,15 +1,36 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
+import { getToken, verifyJWT } from "@/lib/index";
+import Vote from "@/models/Vote";
 
 export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
 
-    await dbConnect();
-    const election = await Election.findById(electionId);
+    const token = getToken(request);
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    return NextResponse.json({ election });
+    let payload = await verifyJWT(token);
+    if (!payload) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    await dbConnect();
+    const election = await Election.findById(electionId).lean();
+    if (!election) {
+      return NextResponse.json({ error: "Election not found" }, { status: 404 });
+    }
+
+    const already = await Vote.findOne({ userId: payload.userId, electionId });
+    const result = {
+      ...election,
+      userHasVoted: !!already,
+    };
+
+    return NextResponse.json({ election: result });
   } catch (error) {
     console.log("Error While fetching the Election ::", error.message);
     return NextResponse.json(

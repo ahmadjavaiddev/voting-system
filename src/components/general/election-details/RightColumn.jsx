@@ -21,35 +21,34 @@ import {
   Trophy,
   Vote,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
 
 const RightColumn = ({ election }) => {
-  console.log("election Right ::", election);
-  const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [hasVoted, setHasVoted] = useState(election.userHasVoted);
+  const [hasVoted, setHasVoted] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+
+  useEffect(() => {
+    setHasVoted(election.userHasVoted);
+  }, [election.userHasVoted]);
 
   // Handle vote submission
   const handleVoteSubmit = async () => {
     try {
-      console.log("selectedCandidate ::", selectedCandidate);
       if (selectedCandidate === null) return;
 
       setIsVoting(true);
-      // Simulate API call
       const response = await axios.post("/api/vote", {
         electionId: election._id,
         party: election.parties[selectedCandidate],
       });
-      console.log("Response of Voting ::", response.data);
+
       if (response.data.success) {
         setIsVoting(false);
         setShowConfirmDialog(false);
@@ -66,6 +65,7 @@ const RightColumn = ({ election }) => {
     (sum, candidate) => sum + candidate.votes,
     0
   );
+
   return (
     <div className="md:col-span-2">
       {/* Alert for voted status */}

@@ -224,3 +224,9 @@ export async function verifyJWT(token) {
     return null;
   }
 }
+
+export function getToken(req) {
+  const auth = req.headers.get("cookie");
+  if (!auth) return null;
+  return auth.replace("token=", "");
+}

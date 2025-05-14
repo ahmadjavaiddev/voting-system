@@ -15,7 +15,7 @@ const ElectionDetails = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await axios(`/api/elections/${electionId}`);
+      const response = await axios.get(`/api/elections/${electionId}`);
       setElectionData({
         ...response.data.election,
         rules: [
@@ -26,7 +26,6 @@ const ElectionDetails = () => {
         ],
         description:
           "Annual election for the Student Council representatives who will serve for the 2025-2026 academic year. The elected council will be responsible for organizing student events, representing student interests to the administration, and managing the student activity budget.",
-        userHasVoted: false,
         totalVotes: 50,
         eligibleVoters: 101,
         candidates: [
