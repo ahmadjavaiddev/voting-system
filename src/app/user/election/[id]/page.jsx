@@ -5,6 +5,7 @@ import LeftColumn from "@/components/general/election-details/LeftColumn";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import RightColumn from "@/components/general/election-details/RightColumn";
 
 const ElectionDetails = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const ElectionDetails = () => {
         variant="ghost"
         size="sm"
         className="mb-4 flex items-center gap-1 text-muted-foreground"
-        onClick={() => router.push("/dashboard")}
+        onClick={() => router.push("/user/dashboard")}
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Dashboard
@@ -23,6 +24,7 @@ const ElectionDetails = () => {
       <ElectionHeader />
       <div className="grid gap-6 md:grid-cols-3">
         <LeftColumn />
+        <RightColumn />
       </div>
     </div>
   );
