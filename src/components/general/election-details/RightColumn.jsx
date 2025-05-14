@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { calculatePercentage, electionData } from "@/lib/index";
+import { calculatePercentage } from "@/lib/index";
 import { Progress } from "@/components/ui/progress";
 import {
   AlertCircle,
@@ -24,12 +24,13 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const RightColumn = () => {
+const RightColumn = ({ election }) => {
+  console.log("election Right ::", election);
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [hasVoted, setHasVoted] = useState(electionData.userHasVoted);
+  const [hasVoted, setHasVoted] = useState(election.userHasVoted);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
 
@@ -48,7 +49,7 @@ const RightColumn = () => {
   };
 
   // Calculate total votes
-  const totalVotes = electionData.candidates.reduce(
+  const totalVotes = election.candidates?.reduce(
     (sum, candidate) => sum + candidate.votes,
     0
   );
@@ -87,7 +88,7 @@ const RightColumn = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{electionData.description}</p>
+              <p className="text-sm">{election.description}</p>
             </CardContent>
           </Card>
 
@@ -110,7 +111,7 @@ const RightColumn = () => {
                 className="space-y-4"
                 disabled={hasVoted}
               >
-                {electionData.candidates.map((candidate) => (
+                {election.candidates?.map((candidate) => (
                   <div
                     key={candidate.id}
                     className={`relative rounded-lg border p-4 transition-all hover:bg-accent ${
@@ -140,7 +141,7 @@ const RightColumn = () => {
                           Key Members
                         </h4>
                         <ul className="mt-1 text-sm">
-                          {candidate.members.map((member, index) => (
+                          {candidate.members?.map((member, index) => (
                             <li key={index}>{member}</li>
                           ))}
                         </ul>
@@ -150,7 +151,7 @@ const RightColumn = () => {
                           Platform
                         </h4>
                         <ul className="mt-1 space-y-1">
-                          {candidate.platform.map((point, index) => (
+                          {candidate.platform?.map((point, index) => (
                             <li
                               key={index}
                               className="flex items-start gap-2 text-sm"
@@ -186,16 +187,16 @@ const RightColumn = () => {
                 <PartyPopper className="h-4 w-4" /> Current Results
               </CardTitle>
               <CardDescription>
-                Live results based on {electionData.totalVotes} votes (
+                Live results based on {election.totalVotes} votes (
                 {calculatePercentage(
-                  electionData.totalVotes,
-                  electionData.eligibleVoters
+                  election.totalVotes,
+                  election.eligibleVoters
                 )}
                 % turnout)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {electionData.candidates.map((candidate) => (
+              {election.candidates?.map((candidate) => (
                 <div key={candidate.id} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

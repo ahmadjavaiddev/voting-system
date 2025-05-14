@@ -24,6 +24,49 @@ const ElectionDetails = () => {
           "Results will be announced within 24 hours of election close",
           "Any disputes must be filed within 48 hours of results announcement",
         ],
+        description:
+          "Annual election for the Student Council representatives who will serve for the 2025-2026 academic year. The elected council will be responsible for organizing student events, representing student interests to the administration, and managing the student activity budget.",
+        userHasVoted: false,
+        totalVotes: 50,
+        eligibleVoters: 101,
+        candidates: [
+          {
+            id: 1,
+            color: "bg-green-500",
+            name: "Progress Party",
+            votes: 30,
+            slogan: "Building a Better Tomorrow",
+            members: [
+              "Alex Johnson (President)",
+              "Maria Garcia (Vice President)",
+              "David Kim (Treasurer)",
+            ],
+            platform: [
+              "Increase student activity funding by 15%",
+              "Create more study spaces across campus",
+              "Implement monthly town halls with administration",
+              "Expand mental health resources",
+            ],
+          },
+          {
+            id: 2,
+            color: "bg-red-500",
+            name: "Congress Party",
+            votes: 20,
+            slogan: "Building a Better Tomorrow",
+            members: [
+              "Alex Johnson (President)",
+              "Maria Garcia (Vice President)",
+              "David Kim (Treasurer)",
+            ],
+            platform: [
+              "Increase student activity funding by 15%",
+              "Create more study spaces across campus",
+              "Implement monthly town halls with administration",
+              "Expand mental health resources",
+            ],
+          },
+        ],
       });
     })();
   }, []);
