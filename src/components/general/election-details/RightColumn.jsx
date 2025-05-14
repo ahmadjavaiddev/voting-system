@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import ConfirmDialog from "./ConfirmDialog";
+import SuccessDialog from "./SuccessDialog";
 
 const RightColumn = ({ election }) => {
   console.log("election Right ::", election);
@@ -233,6 +235,19 @@ const RightColumn = ({ election }) => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ConfirmDialog
+        showConfirmDialog={showConfirmDialog}
+        setShowConfirmDialog={setShowConfirmDialog}
+        selectedCandidate={selectedCandidate}
+        election={election}
+        isVoting={isVoting}
+        handleVoteSubmit={handleVoteSubmit}
+      />
+      <SuccessDialog
+        showSuccessDialog={showSuccessDialog}
+        setShowSuccessDialog={setShowSuccessDialog}
+      />
     </div>
   );
 };
