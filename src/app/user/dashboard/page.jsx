@@ -10,6 +10,7 @@ import axios from "axios";
 
 export default function UserDashboard() {
   const [liveElections, setLiveElections] = useState([]);
+  const [upcomingElections, setUpcomingElections] = useState([]);
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -36,9 +37,18 @@ export default function UserDashboard() {
       console.log("Error while Fetching the Data ::", error.message);
     }
   };
+  const fetchUpcomingElectionsData = async () => {
+    try {
+      const response = await axios("/api/elections/upcoming");
+      setUpcomingElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the Data ::", error.message);
+    }
+  };
 
   useEffect(() => {
     fetchLiveElectionsData();
+    fetchUpcomingElectionsData();
   }, []);
 
   const handleVote = async (electionId, party) => {
@@ -112,8 +122,8 @@ export default function UserDashboard() {
         {/* Upcoming Elections */}
         <TabsContent value="upcoming" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filterElections(mockElections.upcoming).length > 0 ? (
-              filterElections(mockElections.upcoming).map((election) => (
+            {upcomingElections.length > 0 ? (
+              upcomingElections.map((election) => (
                 <UpcomingElectionCard election={election} key={election.id} />
               ))
             ) : (
