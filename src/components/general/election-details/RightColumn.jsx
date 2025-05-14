@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import SuccessDialog from "./SuccessDialog";
+import axios from "axios";
 
 const RightColumn = ({ election }) => {
   console.log("election Right ::", election);
@@ -37,17 +38,27 @@ const RightColumn = ({ election }) => {
   const [activeTab, setActiveTab] = useState("details");
 
   // Handle vote submission
-  const handleVoteSubmit = () => {
-    if (selectedCandidate === null) return;
+  const handleVoteSubmit = async () => {
+    try {
+      console.log("selectedCandidate ::", selectedCandidate);
+      if (selectedCandidate === null) return;
 
-    setIsVoting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsVoting(false);
-      setShowConfirmDialog(false);
-      setHasVoted(true);
-      setShowSuccessDialog(true);
-    }, 1500);
+      setIsVoting(true);
+      // Simulate API call
+      const response = await axios.post("/api/vote", {
+        electionId: election._id,
+        party: election.parties[selectedCandidate],
+      });
+      console.log("Response of Voting ::", response.data);
+      if (response.data.success) {
+        setIsVoting(false);
+        setShowConfirmDialog(false);
+        setHasVoted(true);
+        setShowSuccessDialog(true);
+      }
+    } catch (error) {
+      console.log("Error While vote submiting ::", error.message);
+    }
   };
 
   // Calculate total votes

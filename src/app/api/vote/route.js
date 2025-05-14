@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Vote from "@/models/Vote";
 import Election from "@/models/Election";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
+import { verifyJWT } from "@/lib/index";
 
 function getToken(req) {
   const auth = req.headers.get("cookie");
@@ -24,18 +22,19 @@ export async function POST(req) {
 
     const token = getToken(req);
     if (!token) {
+      console.log("Here is 1");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    let payload = jwt.verify(token, JWT_SECRET);
+    let payload = await verifyJWT(token);
     if (!payload) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
     const userId = payload.userId;
     // Face recognition check
     const faceOk = await faceRecognition(userId);
     if (!faceOk) {
+      console.log("Face");
       return NextResponse.json(
         { error: "Face recognition failed." },
         { status: 403 }
@@ -49,11 +48,8 @@ export async function POST(req) {
       );
     }
     const now = new Date();
-    if (
-      now < election.startTime ||
-      now > election.endTime ||
-      election.status !== "live"
-    ) {
+    if (now < election.startTime || now > election.endTime) {
+      console.log("date");
       return NextResponse.json(
         { error: "Voting is not allowed at this time." },
         { status: 403 }
@@ -69,7 +65,10 @@ export async function POST(req) {
     }
     // Cast vote
     await Vote.create({ userId, electionId, party });
-    return NextResponse.json({ message: "Vote cast successfully." });
+    return NextResponse.json({
+      message: "Vote cast successfully.",
+      success: true,
+    });
   } catch (error) {
     console.log("Error in the Vote Route");
     return NextResponse.json(

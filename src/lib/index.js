@@ -1,3 +1,5 @@
+import { jwtVerify } from "jose";
+
 export function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -211,3 +213,14 @@ export const electionData = {
   ],
   userHasVoted: false,
 };
+
+export const JWT_SECRET = process.env.JWT_SECRET || "secret";
+export async function verifyJWT(token) {
+  const secret = new TextEncoder().encode(JWT_SECRET);
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
+  } catch {
+    return null;
+  }
+}
