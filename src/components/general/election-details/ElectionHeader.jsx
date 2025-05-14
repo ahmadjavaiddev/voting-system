@@ -5,27 +5,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  electionData,
-  getTimeRemaining,
-  calculatePercentage,
-} from "@/lib/index";
+import { getTimeRemaining, calculatePercentage } from "@/lib/index";
 import { Clock, Users, Vote } from "lucide-react";
 import React from "react";
 
-const ElectionHeader = () => {
+const ElectionHeader = ({ election }) => {
   return (
     <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
       {/* Election header */}
       <div>
-        <h1 className="text-2xl font-bold md:text-3xl">{electionData.title}</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">{election.title}</h1>
         <div className="mt-1 flex items-center gap-2">
           <Badge variant="default" className="bg-green-500 hover:bg-green-600">
             Live
           </Badge>
           <span className="text-sm text-muted-foreground">
             <Clock className="mr-1 inline-block h-3 w-3" />
-            Ends in {getTimeRemaining(electionData.endTime)}
+            Ends in {getTimeRemaining(election.endTime)}
           </span>
         </div>
       </div>
@@ -35,7 +31,7 @@ const ElectionHeader = () => {
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
                 <Users className="h-3.5 w-3.5" />
-                <span>{electionData.totalVotes}</span>
+                <span>{election.totalVotes}</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -51,8 +47,8 @@ const ElectionHeader = () => {
                 <Vote className="h-3.5 w-3.5" />
                 <span>
                   {calculatePercentage(
-                    electionData.totalVotes,
-                    electionData.eligibleVoters
+                    election.totalVotes,
+                    election.eligibleVoters
                   )}
                   % Turnout
                 </span>
@@ -60,8 +56,8 @@ const ElectionHeader = () => {
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                {electionData.totalVotes} out of {electionData.eligibleVoters}{" "}
-                eligible voters
+                {election.totalVotes} out of {election.eligibleVoters} eligible
+                voters
               </p>
             </TooltipContent>
           </Tooltip>
