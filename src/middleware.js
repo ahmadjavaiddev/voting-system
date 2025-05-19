@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { verifyJWT } from "./lib";
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request) {
   try {
     const { pathname } = request.nextUrl;
 
     // Apply protection to all /user and /admin routes (including nested)
     if (pathname.startsWith("/user") || pathname.startsWith("/admin")) {
       // Get JWT from cookies
-      const token = request.cookies.get("token")?.value;
+      const token = request.cookies?.get("token")?.value;
       if (!token) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
 
-      const payload: any = await verifyJWT(token);
+      const payload = await verifyJWT(token);
       if (!payload) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
@@ -33,7 +32,7 @@ export async function middleware(request: NextRequest) {
     } else {
       return NextResponse.next();
     }
-  } catch (error: any) {
+  } catch (error) {
     console.log("Error In Middleware ::", error.message);
     return NextResponse.redirect(new URL("/login", request.url));
   }

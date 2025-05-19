@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 const ElectionDetails = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const ElectionDetails = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await axios.get(`/api/elections/${electionId}`);
+      const response = await axiosInstance.get(`/api/elections/${electionId}`);
       setElectionData({
         ...response.data.election,
         rules: [

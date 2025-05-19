@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
-import { getToken, verifyJWT } from "@/lib/index";
+import { validateJWTToken } from "@/lib/index";
 import Vote from "@/models/Vote";
 
 export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
 
-    const token = getToken(request);
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    let payload = await verifyJWT(token);
+    const payload = await validateJWTToken(request);
     if (!payload) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
@@ -21,10 +16,16 @@ export async function GET(request, { params }) {
     await dbConnect();
     const election = await Election.findById(electionId).lean();
     if (!election) {
-      return NextResponse.json({ error: "Election not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Election not found" },
+        { status: 404 }
+      );
     }
 
-    const already = await Vote.findOne({ userId: payload.userId, electionId });
+    const already = await Vote.findOne({
+      userId: payload.userId,
+      electionId: election._id,
+    });
     const result = {
       ...election,
       userHasVoted: !!already,

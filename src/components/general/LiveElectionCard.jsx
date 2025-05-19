@@ -16,7 +16,7 @@ import React from "react";
 
 const LiveElectionCard = ({ election }) => {
   const router = useRouter();
-  console.log("election in Card ::", election);
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">

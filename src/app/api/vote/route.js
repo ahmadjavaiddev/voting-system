@@ -22,7 +22,6 @@ export async function POST(req) {
 
     const token = getToken(req);
     if (!token) {
-      console.log("Here is 1");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -34,7 +33,6 @@ export async function POST(req) {
     // Face recognition check
     const faceOk = await faceRecognition(userId);
     if (!faceOk) {
-      console.log("Face");
       return NextResponse.json(
         { error: "Face recognition failed." },
         { status: 403 }
@@ -49,7 +47,6 @@ export async function POST(req) {
     }
     const now = new Date();
     if (now < election.startTime || now > election.endTime) {
-      console.log("date");
       return NextResponse.json(
         { error: "Voting is not allowed at this time." },
         { status: 403 }

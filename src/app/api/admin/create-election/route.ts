@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 function getToken(req: NextRequest) {
-  console.log("req.headers ::", req.headers);
   const auth = req.headers.get("cookie");
   if (!auth) return null;
   return auth.replace("token=", "");

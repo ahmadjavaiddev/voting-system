@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       { status: 403 }
     );
   }
-  console.log("user ::", user);
+
   const token = await signJWT({ userId: user._id.toString(), role: user.role });
   const response = NextResponse.json({
     user: { email: user.email, name: user.name, role: user.role },

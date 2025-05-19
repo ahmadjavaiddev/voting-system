@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 function getToken(req: NextRequest) {
-  console.log("req.headers ::", req.headers);
   const auth = req.headers.get("cookie");
   if (!auth) return null;
   return auth.replace("token=", "");
@@ -16,7 +15,6 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
     const token = getToken(req);
-    console.log("token ::", token);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -26,7 +24,6 @@ export async function GET(req: NextRequest) {
     }
 
     if (payload.role !== "admin") {
-      console.log("role");
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
