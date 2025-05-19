@@ -242,3 +242,11 @@ export async function validateJWTToken(request) {
     return null;
   }
 }
+
+export function getTimeEnded(time) {
+  if (time) {
+    const endTime = new Date(time)?.getTime();
+    const now = Date.now();
+    return endTime <= now ? true : false;
+  }
+}

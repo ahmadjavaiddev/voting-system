@@ -8,6 +8,7 @@ import {
 import {
   getTimeRemaining,
   getTimeLeft,
+  getTimeEnded,
   calculatePercentage,
 } from "@/lib/index";
 import { Clock, Users, Vote } from "lucide-react";
@@ -19,7 +20,7 @@ const ElectionHeader = ({ election }) => {
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">{election.title}</h1>
         <div className="mt-1 flex items-center gap-2">
-          {getTimeLeft(election.endTime) === "Ended" ? (
+          {getTimeEnded(election.endTime) ? (
             <Badge variant="default" className="bg-red-500 hover:bg-red-600">
               Ended
             </Badge>

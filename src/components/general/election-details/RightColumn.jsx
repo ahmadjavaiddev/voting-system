@@ -25,6 +25,7 @@ import React, { useEffect, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
+import { getTimeEnded } from "@/lib/index";
 
 const RightColumn = ({ election }) => {
   const [selectedCandidate, setSelectedCandidate] = useState(0);
@@ -76,6 +77,17 @@ const RightColumn = ({ election }) => {
           <AlertDescription>
             Your vote has been successfully recorded. Thank you for
             participating in this election.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Alert if user did'nt cast the vote and also the time ended */}
+      {!hasVoted && getTimeEnded(election.endTime) && (
+        <Alert className="mb-6 border-red-200 bg-red-100 text-red-800">
+          <CheckCircle className="h-4 w-4" />
+          <AlertTitle>Election Ended</AlertTitle>
+          <AlertDescription>
+            Election has been ended. Better luck for the next time.
           </AlertDescription>
         </Alert>
       )}
