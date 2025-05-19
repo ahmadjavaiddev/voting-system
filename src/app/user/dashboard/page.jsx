@@ -11,7 +11,7 @@ import axios from "axios";
 export default function UserDashboard() {
   const [liveElections, setLiveElections] = useState([]);
   const [upcomingElections, setUpcomingElections] = useState([]);
-  const [history, setHistory] = useState([]);
+  const [historyElections, setHistoryElections] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function UserDashboard() {
       const response = await axios("/api/elections/live");
       setLiveElections(response?.data?.elections || []);
     } catch (error) {
-      console.log("Error while Fetching the Data ::", error.message);
+      console.log("Error while Fetching the live Data ::", error.message);
     }
   };
   const fetchUpcomingElectionsData = async () => {
@@ -42,13 +42,22 @@ export default function UserDashboard() {
       const response = await axios("/api/elections/upcoming");
       setUpcomingElections(response?.data?.elections || []);
     } catch (error) {
-      console.log("Error while Fetching the Data ::", error.message);
+      console.log("Error while Fetching the upcoming Data ::", error.message);
+    }
+  };
+  const fetchPreviousElectionsData = async () => {
+    try {
+      const response = await axios("/api/elections/previous");
+      setHistoryElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the previous Data ::", error.message);
     }
   };
 
   useEffect(() => {
     fetchLiveElectionsData();
     fetchUpcomingElectionsData();
+    fetchPreviousElectionsData();
   }, []);
 
   const handleVote = async (electionId, party) => {
@@ -123,8 +132,8 @@ export default function UserDashboard() {
         <TabsContent value="upcoming" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {upcomingElections.length > 0 ? (
-              upcomingElections.map((election) => (
-                <UpcomingElectionCard election={election} key={election.id} />
+              upcomingElections?.map((election) => (
+                <UpcomingElectionCard election={election} key={election._id} />
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
@@ -147,9 +156,9 @@ export default function UserDashboard() {
         {/* Previous Elections */}
         <TabsContent value="previous" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filterElections(mockElections.previous).length > 0 ? (
-              filterElections(mockElections.previous).map((election) => (
-                <PreviousElectionCard election={election} key={election.id} />
+            {historyElections.length > 0 ? (
+              historyElections?.map((election) => (
+                <PreviousElectionCard election={election} key={election._id} />
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">

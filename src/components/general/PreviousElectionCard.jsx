@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { formatDate } from "@/lib/index";
 import { CheckCircle2, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const PreviousElectionCard = ({ election }) => {
@@ -69,12 +70,14 @@ const PreviousElectionCard = ({ election }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button
-          variant="outline"
-          className="w-full flex items-center justify-center"
-        >
-          View Results <ChevronRight className="ml-1 h-4 w-4" />
-        </Button>
+        <Link href={`/user/election/${election._id}`} className="w-full">
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-center"
+          >
+            View Results <ChevronRight className="ml-1 h-4 w-4" />
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
