@@ -67,6 +67,10 @@ const RightColumn = ({ election }) => {
     0
   );
 
+  function getTheCondition() {
+    return hasVoted || (hasVoted && !getTimeEnded(election.endTime));
+  }
+
   return (
     <div className="md:col-span-2">
       {/* Alert for voted status */}
@@ -118,7 +122,13 @@ const RightColumn = ({ election }) => {
           </Card>
 
           {/* Voting section */}
-          <Card className={hasVoted ? "opacity-60" : ""}>
+          <Card
+            className={
+              hasVoted || (!hasVoted && getTimeEnded(election.endTime))
+                ? "opacity-60"
+                : ""
+            }
+          >
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Vote className="h-4 w-4" /> Cast Your Vote
@@ -134,7 +144,7 @@ const RightColumn = ({ election }) => {
                   setSelectedCandidate(Number.parseInt(value))
                 }
                 className="space-y-4"
-                disabled={hasVoted}
+                disabled={hasVoted || getTheCondition()}
               >
                 {election.candidates?.map((candidate) => (
                   <div
@@ -149,7 +159,7 @@ const RightColumn = ({ election }) => {
                       value={candidate.id.toString()}
                       id={`candidate-${candidate.id}`}
                       className="absolute right-4 top-4"
-                      disabled={hasVoted}
+                      disabled={hasVoted || getTheCondition()}
                     />
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
@@ -195,10 +205,22 @@ const RightColumn = ({ election }) => {
             <CardFooter>
               <Button
                 className="w-full"
-                disabled={selectedCandidate === null || hasVoted}
-                onClick={() => setShowConfirmDialog(true)}
+                disabled={
+                  selectedCandidate === null ||
+                  hasVoted ||
+                  (!hasVoted && getTimeEnded(election.endTime))
+                }
+                onClick={() => {
+                  if (!getTimeEnded(election.endTime) || hasVoted) {
+                    setShowConfirmDialog(true);
+                  }
+                }}
               >
-                {hasVoted ? "Vote Recorded" : "Submit Vote"}
+                {hasVoted
+                  ? "Vote Recorded"
+                  : !hasVoted && !getTimeEnded(election.endTime)
+                  ? "Submit Vote"
+                  : "Election Ended"}
               </Button>
             </CardFooter>
           </Card>
