@@ -39,6 +39,9 @@ const RightColumn = ({ election }) => {
     setHasVoted(election.userHasVoted);
   }, [election.userHasVoted]);
 
+  const electionEnded = getTimeEnded(election.endTime);
+  const votingDisabled = hasVoted || electionEnded;
+
   // Handle vote submission
   const handleVoteSubmit = async () => {
     try {
@@ -67,10 +70,6 @@ const RightColumn = ({ election }) => {
     0
   );
 
-  function getTheCondition() {
-    return hasVoted || (hasVoted && !getTimeEnded(election.endTime));
-  }
-
   return (
     <div className="md:col-span-2">
       {/* Alert for voted status */}
@@ -86,7 +85,7 @@ const RightColumn = ({ election }) => {
       )}
 
       {/* Alert if user did'nt cast the vote and also the time ended */}
-      {!hasVoted && getTimeEnded(election.endTime) && (
+      {!hasVoted && electionEnded && (
         <Alert className="mb-6 border-red-200 bg-red-100 text-red-800">
           <CheckCircle className="h-4 w-4" />
           <AlertTitle>Election Ended</AlertTitle>
@@ -124,9 +123,7 @@ const RightColumn = ({ election }) => {
           {/* Voting section */}
           <Card
             className={
-              hasVoted || (!hasVoted && getTimeEnded(election.endTime))
-                ? "opacity-60"
-                : ""
+              votingDisabled ? "opacity-60" : ""
             }
           >
             <CardHeader className="pb-3">
@@ -144,7 +141,7 @@ const RightColumn = ({ election }) => {
                   setSelectedCandidate(Number.parseInt(value))
                 }
                 className="space-y-4"
-                disabled={hasVoted || getTheCondition()}
+                disabled={votingDisabled}
               >
                 {election.candidates?.map((candidate) => (
                   <div
@@ -159,7 +156,7 @@ const RightColumn = ({ election }) => {
                       value={candidate.id.toString()}
                       id={`candidate-${candidate.id}`}
                       className="absolute right-4 top-4"
-                      disabled={hasVoted || getTheCondition()}
+                      disabled={votingDisabled}
                     />
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
@@ -206,19 +203,17 @@ const RightColumn = ({ election }) => {
               <Button
                 className="w-full"
                 disabled={
-                  selectedCandidate === null ||
-                  hasVoted ||
-                  (!hasVoted && getTimeEnded(election.endTime))
+                  selectedCandidate === null || votingDisabled
                 }
                 onClick={() => {
-                  if (!getTimeEnded(election.endTime) || hasVoted) {
+                  if (!votingDisabled) {
                     setShowConfirmDialog(true);
                   }
                 }}
               >
                 {hasVoted
                   ? "Vote Recorded"
-                  : !hasVoted && !getTimeEnded(election.endTime)
+                  : !hasVoted && !electionEnded
                   ? "Submit Vote"
                   : "Election Ended"}
               </Button>
