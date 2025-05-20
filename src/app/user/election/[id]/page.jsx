@@ -7,71 +7,28 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
 import axiosInstance from "@/lib/axios";
+import ElectionDetailsLoading from "@/components/general/loadings/ElectionDetailsLoading";
 
 const ElectionDetails = () => {
   const router = useRouter();
   const electionId = useParams().id;
   const [electionData, setElectionData] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const response = await axiosInstance.get(`/api/elections/${electionId}`);
-      setElectionData({
-        ...response.data.election,
-        rules: [
-          "Each student may cast one vote only",
-          "Voting requires valid student ID verification",
-          "Results will be announced within 24 hours of election close",
-          "Any disputes must be filed within 48 hours of results announcement",
-        ],
-        description:
-          "Annual election for the Student Council representatives who will serve for the 2025-2026 academic year. The elected council will be responsible for organizing student events, representing student interests to the administration, and managing the student activity budget.",
-        totalVotes: 50,
-        eligibleVoters: 101,
-        candidates: [
-          {
-            id: 1,
-            color: "bg-green-500",
-            name: "Progress Party",
-            votes: 30,
-            slogan: "Building a Better Tomorrow",
-            members: [
-              "Alex Johnson (President)",
-              "Maria Garcia (Vice President)",
-              "David Kim (Treasurer)",
-            ],
-            platform: [
-              "Increase student activity funding by 15%",
-              "Create more study spaces across campus",
-              "Implement monthly town halls with administration",
-              "Expand mental health resources",
-            ],
-          },
-          {
-            id: 2,
-            color: "bg-red-500",
-            name: "Congress Party",
-            votes: 20,
-            slogan: "Building a Better Tomorrow",
-            members: [
-              "Alex Johnson (President)",
-              "Maria Garcia (Vice President)",
-              "David Kim (Treasurer)",
-            ],
-            platform: [
-              "Increase student activity funding by 15%",
-              "Create more study spaces across campus",
-              "Implement monthly town halls with administration",
-              "Expand mental health resources",
-            ],
-          },
-        ],
-      });
+      setElectionData(response.data.election);
+      setLoading(false);
     })();
   }, []);
 
+  if (loading) {
+    return <ElectionDetailsLoading />;
+  }
+
   return (
-    <div className="container mx-auto p-4 md:p-6 max-w-5xl">
+    <div className="container mx-auto p-4 md:p-6 max-w-6xl">
       <Button
         variant="ghost"
         size="sm"
@@ -81,10 +38,10 @@ const ElectionDetails = () => {
         <ArrowLeft className="h-4 w-4" />
         Back to Dashboard
       </Button>
-      <ElectionHeader election={electionData} />
+      <ElectionHeader election={electionData} isAdmin={false} />
       <div className="grid gap-6 md:grid-cols-3">
-        <LeftColumn election={electionData} />
-        <RightColumn election={electionData} />
+        <LeftColumn election={electionData} isAdmin={false} />
+        <RightColumn election={electionData} isAdmin={false} />
       </div>
     </div>
   );

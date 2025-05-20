@@ -27,8 +27,8 @@ import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
 import { getTimeEnded } from "@/lib/index";
 
-const RightColumn = ({ election }) => {
-  const [selectedCandidate, setSelectedCandidate] = useState(0);
+const RightColumn = ({ election, isAdmin = false }) => {
+  const [selectedCandidate, setSelectedCandidate] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
@@ -40,17 +40,17 @@ const RightColumn = ({ election }) => {
   }, [election.userHasVoted]);
 
   const electionEnded = getTimeEnded(election.endTime);
-  const votingDisabled = hasVoted || electionEnded;
+  const votingDisabled = hasVoted || electionEnded || isAdmin;
 
   // Handle vote submission
   const handleVoteSubmit = async () => {
     try {
-      if (selectedCandidate === null) return;
+      if (!selectedCandidate) return;
 
       setIsVoting(true);
       const response = await axios.post("/api/vote", {
         electionId: election._id,
-        party: election.parties[selectedCandidate],
+        candidate: selectedCandidate,
       });
 
       if (response.data.success) {
@@ -120,99 +120,91 @@ const RightColumn = ({ election }) => {
             </CardContent>
           </Card>
 
-          {/* Voting section */}
-          <Card className={votingDisabled ? "opacity-60" : ""}>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2">
-                <Vote className="h-4 w-4" /> Cast Your Vote
-              </CardTitle>
-              <CardDescription>
-                Select one candidate from the list below
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup
-                value={selectedCandidate?.toString()}
-                onValueChange={(value) =>
-                  setSelectedCandidate(Number.parseInt(value))
-                }
-                className="space-y-4"
-                disabled={votingDisabled}
-              >
-                {election.candidates?.map((candidate) => (
-                  <div
-                    key={candidate._id}
-                    className={`relative rounded-lg border p-4 transition-all hover:bg-accent ${
-                      selectedCandidate === candidate._id
-                        ? "border-primary ring-1 ring-primary"
-                        : ""
-                    }`}
-                  >
-                    <RadioGroupItem
-                      value={candidate._id}
-                      id={`candidate-${candidate._id}`}
-                      className="absolute right-4 top-4"
-                      disabled={votingDisabled}
-                    />
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`h-3 w-3 rounded-full ${candidate.color}`}
-                        ></div>
-                        <h3 className="font-medium">{candidate.name}</h3>
-                      </div>
-                      <p className="text-sm italic text-muted-foreground">
-                        "{candidate.slogan}"
-                      </p>
-                      <div>
-                        <h4 className="text-xs font-medium uppercase text-muted-foreground">
-                          Key Members
-                        </h4>
-                        <ul className="mt-1 text-sm">
-                          {candidate.members?.map((member, index) => (
-                            <li key={index}>{member}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-medium uppercase text-muted-foreground">
-                          Platform
-                        </h4>
-                        <ul className="mt-1 space-y-1">
-                          {candidate.platform?.map((point, index) => (
-                            <li
-                              key={index}
-                              className="flex items-start gap-2 text-sm"
-                            >
-                              <ThumbsUp className="mt-0.5 h-3 w-3 flex-shrink-0 text-muted-foreground" />
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
+          {/* Voting section: only show if not admin, not voted, and not ended */}
+          {!isAdmin && !hasVoted && !electionEnded && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2">
+                  <Vote className="h-4 w-4" /> Cast Your Vote
+                </CardTitle>
+                <CardDescription>
+                  Select one candidate from the list below
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup
+                  value={selectedCandidate}
+                  onValueChange={setSelectedCandidate}
+                  className="space-y-4"
+                >
+                  {election.candidates?.map((candidate) => (
+                    <div
+                      key={candidate._id}
+                      className={`relative rounded-lg border p-4 transition-all hover:bg-accent ${
+                        selectedCandidate === candidate._id
+                          ? "border-primary ring-1 ring-primary"
+                          : ""
+                      }`}
+                    >
+                      <RadioGroupItem
+                        value={candidate._id}
+                        id={candidate._id}
+                        className="absolute right-4 top-4"
+                      />
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`h-3 w-3 rounded-full ${candidate.color}`}
+                          ></div>
+                          <h3 className="font-medium">{candidate.name}</h3>
+                        </div>
+                        <p className="text-sm italic text-muted-foreground">
+                          "{candidate.slogan}"
+                        </p>
+                        <div>
+                          <h4 className="text-xs font-medium uppercase text-muted-foreground">
+                            Key Members
+                          </h4>
+                          <ul className="mt-1 text-sm">
+                            {candidate.members?.map((member, index) => (
+                              <li key={index}>{member}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-medium uppercase text-muted-foreground">
+                            Platform
+                          </h4>
+                          <ul className="mt-1 space-y-1">
+                            {candidate.platform?.map((point, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2 text-sm"
+                              >
+                                <ThumbsUp className="mt-0.5 h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </RadioGroup>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full"
-                disabled={selectedCandidate === null || votingDisabled}
-                onClick={() => {
-                  if (!votingDisabled) {
+                  ))}
+                </RadioGroup>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  disabled={!selectedCandidate}
+                  onClick={() => {
                     setShowConfirmDialog(true);
-                  }
-                }}
-              >
-                {hasVoted
-                  ? "Vote Recorded"
-                  : !hasVoted && !electionEnded
-                  ? "Submit Vote"
-                  : "Election Ended"}
-              </Button>
-            </CardFooter>
-          </Card>
+                  }}
+                >
+                  Submit Vote
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Results tab */}
