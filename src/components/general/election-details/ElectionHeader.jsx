@@ -5,22 +5,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  getTimeRemaining,
-  getTimeLeft,
-  getTimeEnded,
-  calculatePercentage,
-} from "@/lib/index";
-import { Clock, Users, Vote } from "lucide-react";
+import { calculatePercentage } from "@/lib/index";
+import { Users, Vote } from "lucide-react";
+import moment from "moment";
 import React from "react";
 
 const ElectionHeader = ({ election }) => {
+  const now = moment();
+  const start = moment(election.startTime);
+  const end = moment(election.endTime);
+
   return (
     <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">{election.title}</h1>
         <div className="mt-1 flex items-center gap-2">
-          {getTimeEnded(election.endTime) ? (
+          {now.isBefore(start) && (
+            <Badge
+              variant="default"
+              className="bg-orange-500 hover:bg-orange-600"
+            >
+              Starting Soon
+            </Badge>
+          )}
+          {now.isAfter(end) ? (
             <Badge variant="default" className="bg-red-500 hover:bg-red-600">
               Ended
             </Badge>
@@ -31,13 +39,6 @@ const ElectionHeader = ({ election }) => {
             >
               Live
             </Badge>
-          )}
-
-          {getTimeLeft(election.endTime) !== "Ended" && (
-            <span className="text-sm text-muted-foreground">
-              <Clock className="mr-1 inline-block h-3 w-3" />
-              Ends in {getTimeRemaining(election.endTime)}
-            </span>
           )}
         </div>
       </div>

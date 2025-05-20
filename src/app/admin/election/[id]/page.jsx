@@ -7,7 +7,6 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
 import axiosInstance from "@/lib/axios";
-import moment from "moment";
 
 const ElectionDetails = () => {
   const router = useRouter();
@@ -23,31 +22,6 @@ const ElectionDetails = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-5xl">
-      {(() => {
-        const now = moment();
-        const start = moment(electionData.startTime);
-        const end = moment(electionData.endTime);
-        if (!electionData.startTime || !electionData.endTime) return null;
-        if (now.isBefore(start)) {
-          return (
-            <div className="mb-4 text-blue-500 font-semibold">
-              Election starts {start.fromNow()} (at {start.format("LLL")})
-            </div>
-          );
-        } else if (now.isAfter(end)) {
-          return (
-            <div className="mb-4 text-red-500 font-semibold">
-              Election Ended {end.fromNow()} (ended at {end.format("LLL")})
-            </div>
-          );
-        } else {
-          return (
-            <div className="mb-4 text-green-600 font-semibold">
-              Time Remaining: {end.toNow(true)} (ends at {end.format("LLL")})
-            </div>
-          );
-        }
-      })()}
       <Button
         variant="ghost"
         size="sm"
