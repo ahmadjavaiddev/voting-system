@@ -121,11 +121,7 @@ const RightColumn = ({ election }) => {
           </Card>
 
           {/* Voting section */}
-          <Card
-            className={
-              votingDisabled ? "opacity-60" : ""
-            }
-          >
+          <Card className={votingDisabled ? "opacity-60" : ""}>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Vote className="h-4 w-4" /> Cast Your Vote
@@ -145,16 +141,16 @@ const RightColumn = ({ election }) => {
               >
                 {election.candidates?.map((candidate) => (
                   <div
-                    key={candidate.id}
+                    key={candidate._id}
                     className={`relative rounded-lg border p-4 transition-all hover:bg-accent ${
-                      selectedCandidate === candidate.id
+                      selectedCandidate === candidate._id
                         ? "border-primary ring-1 ring-primary"
                         : ""
                     }`}
                   >
                     <RadioGroupItem
-                      value={candidate.id.toString()}
-                      id={`candidate-${candidate.id}`}
+                      value={candidate._id}
+                      id={`candidate-${candidate._id}`}
                       className="absolute right-4 top-4"
                       disabled={votingDisabled}
                     />
@@ -202,9 +198,7 @@ const RightColumn = ({ election }) => {
             <CardFooter>
               <Button
                 className="w-full"
-                disabled={
-                  selectedCandidate === null || votingDisabled
-                }
+                disabled={selectedCandidate === null || votingDisabled}
                 onClick={() => {
                   if (!votingDisabled) {
                     setShowConfirmDialog(true);
