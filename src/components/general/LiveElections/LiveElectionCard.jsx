@@ -11,12 +11,9 @@ import {
 } from "@/components/ui/card";
 import { formatDate, getTimeLeft } from "@/lib";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 const LiveElectionCard = ({ election, isAdmin }) => {
-  const router = useRouter();
-
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">

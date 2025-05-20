@@ -6,7 +6,7 @@ export interface ICandidate {
   color: string;
   members: string[];
   platform: string[];
-  winner: boolean[];
+  winner: boolean;
 }
 
 export interface IElection extends Document {
@@ -27,7 +27,7 @@ const CandidateSchema = new Schema<ICandidate>({
   color: { type: String, required: true },
   members: [{ type: String, required: true }],
   platform: [{ type: String, required: true }],
-  winner: [{ type: Boolean, default: false }],
+  winner: { type: Boolean, default: false },
 });
 
 const ElectionSchema = new Schema<IElection>({

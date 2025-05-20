@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarClock, Clock, History } from "lucide-react";
 import { mockElections } from "@/lib/index";
-import LiveElectionCard from "@/components/general/LiveElectionCard";
-import UpcomingElectionCard from "@/components/general/UpcomingElectionCard";
-import PreviousElectionCard from "@/components/general/PreviousElectionCard";
+import LiveElectionCard from "@/components/general/LiveElections/LiveElectionCard";
+import UpcomingElectionCard from "@/components/general/UpcomingElections/UpcomingElectionCard";
+import PreviousElectionCard from "@/components/general/PreviousElections/PreviousElectionCard";
 import axios from "axios";
 
 export default function UserDashboard() {
