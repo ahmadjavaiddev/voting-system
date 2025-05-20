@@ -76,9 +76,6 @@ export default function AdminDashboard() {
               liveElections?.map((election) => (
                 <div key={election._id} className="relative">
                   <LiveElectionCard election={election} isAdmin={true} />
-                  <Button size="sm" className="absolute top-2 right-2">
-                    View Results
-                  </Button>
                 </div>
               ))
             ) : (

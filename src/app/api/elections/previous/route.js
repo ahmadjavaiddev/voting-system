@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
+import Vote from "@/models/Vote";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,7 +15,23 @@ export async function GET() {
       endTime: { $lt: now },
     });
 
-    return NextResponse.json({ elections: elections.reverse() });
+    const electionsWithVotes = await Promise.all(
+      elections.map(async (election) => {
+        const votes = await Vote.aggregate([
+          { $match: { electionId: election._id } },
+          { $group: { _id: "$party", count: { $sum: 1 } } },
+        ]);
+        return {
+          ...election.toObject(),
+          votes: votes.map((vote) => ({
+            party: vote._id,
+            count: vote.count,
+          })),
+        };
+      })
+    );
+
+    return NextResponse.json({ elections: electionsWithVotes.reverse() });
   } catch (error) {
     console.log("Error While fetching the Elections ::", error.message);
     return NextResponse.json(

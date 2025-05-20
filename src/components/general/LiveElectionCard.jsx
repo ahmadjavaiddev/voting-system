@@ -27,7 +27,7 @@ const LiveElectionCard = ({ election, isAdmin }) => {
           </Badge>
         </div>
         <CardDescription>
-          {election.parties.length} candidates • {election.votes} votes cast
+          {election.candidates.length} candidates • {election.votes} votes cast
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-2">
@@ -45,22 +45,24 @@ const LiveElectionCard = ({ election, isAdmin }) => {
           <div className="mt-2">
             <p className="text-sm font-medium mb-1">Candidates:</p>
             <div className="flex flex-wrap gap-2">
-              {election.parties.map((party, index) => (
+              {election.candidates.map((party, index) => (
                 <Badge key={index} variant="outline" className="bg-background">
-                  {party}
+                  {party.name}
                 </Badge>
               ))}
             </div>
           </div>
         </div>
       </CardContent>
-      {!isAdmin && (
-        <CardFooter>
-          <Link href={`/user/election/${election._id}`} className="w-full">
-            <Button className="w-full">Cast Your Vote</Button>
-          </Link>
-        </CardFooter>
-      )}
+
+      <CardFooter>
+        <Link
+          href={`/${isAdmin ? "admin" : "user"}/election/${election._id}`}
+          className="w-full"
+        >
+          <Button className="w-full">Cast Your Vote</Button>
+        </Link>
+      </CardFooter>
     </Card>
   );
 };
