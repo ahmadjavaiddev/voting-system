@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/index";
+import moment from "moment";
 import { Calendar, HelpCircle, Info, Shield, Timer, Users } from "lucide-react";
 import React from "react";
 
@@ -21,7 +21,7 @@ const LeftColumn = ({ election }) => {
             </h3>
             <p className="flex items-center gap-1.5 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              {formatDate(election.startTime)}
+              {moment(election.startTime).format("LLL")}
             </p>
           </div>
           <div>
@@ -30,7 +30,7 @@ const LeftColumn = ({ election }) => {
             </h3>
             <p className="flex items-center gap-1.5 text-sm">
               <Timer className="h-4 w-4 text-muted-foreground" />
-              {formatDate(election.endTime)}
+              {moment(election.endTime).format("LLL")}
             </p>
           </div>
           <div>
