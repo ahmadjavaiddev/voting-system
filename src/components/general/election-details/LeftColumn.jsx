@@ -22,6 +22,7 @@ const LeftColumn = ({ election }) => {
             <p className="flex items-center gap-1.5 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               {moment(election.startTime).format("LLL")}
+              <span className="ml-2 text-xs text-muted-foreground">({moment(election.startTime).fromNow()})</span>
             </p>
           </div>
           <div>
@@ -31,6 +32,7 @@ const LeftColumn = ({ election }) => {
             <p className="flex items-center gap-1.5 text-sm">
               <Timer className="h-4 w-4 text-muted-foreground" />
               {moment(election.endTime).format("LLL")}
+              <span className="ml-2 text-xs text-muted-foreground">({moment(election.endTime).fromNow()})</span>
             </p>
           </div>
           <div>

@@ -20,7 +20,7 @@ const UpcomingElectionsTab = () => {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {upcomingElections.length > 0 ? (
+      {upcomingElections?.length > 0 ? (
         upcomingElections?.map((election) => (
           <UpcomingElectionCard election={election} key={election._id} />
         ))

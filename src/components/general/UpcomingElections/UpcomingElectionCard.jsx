@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDate, getTimeRemaining } from "@/lib/index";
+import moment from "moment";
 import React from "react";
 
 const UpcomingElectionCard = ({ election }) => {
@@ -25,7 +25,7 @@ const UpcomingElectionCard = ({ election }) => {
           </Badge>
         </div>
         <CardDescription>
-          {election.parties.length} candidates registered
+          {election.candidates.length} candidates registered
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-2">
@@ -33,23 +33,25 @@ const UpcomingElectionCard = ({ election }) => {
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Starts in:</span>
             <span className="font-medium text-blue-600">
-              {getTimeRemaining(election.startTime)}
+              {moment().isAfter(moment(election.startTime))
+                ? "Started"
+                : moment(election.startTime).fromNow()}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Start date:</span>
-            <span>{formatDate(election.startTime)}</span>
+            <span>{moment(election.startTime).format("LLL")}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">End date:</span>
-            <span>{formatDate(election.endTime)}</span>
+            <span>{moment(election.endTime).format("LLL")}</span>
           </div>
           <div className="mt-2">
             <p className="text-sm font-medium mb-1">Candidates:</p>
             <div className="flex flex-wrap gap-2">
-              {election.parties.map((party, index) => (
+              {election.candidates.map((party, index) => (
                 <Badge key={index} variant="outline" className="bg-background">
-                  {party}
+                  {party.name}
                 </Badge>
               ))}
             </div>
