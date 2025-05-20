@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDate, getTimeLeft } from "@/lib";
+import moment from "moment";
 import Link from "next/link";
 import React from "react";
 
@@ -31,12 +31,14 @@ const LiveElectionCard = ({ election, isAdmin }) => {
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Started:</span>
-            <span>{formatDate(election.startTime)}</span>
+            <span>{moment(election.startTime).format("LLL")}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Ends in:</span>
             <span className="font-medium text-amber-600">
-              {getTimeLeft(election.endTime)}
+              {moment().isAfter(moment(election.endTime))
+                ? "Ended"
+                : moment(election.startTime).format("LLL")}
             </span>
           </div>
           <div className="mt-2">

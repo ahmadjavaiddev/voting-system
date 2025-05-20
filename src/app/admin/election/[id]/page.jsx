@@ -7,18 +7,25 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
 import axiosInstance from "@/lib/axios";
+import ElectionDetailsLoading from "@/components/general/loadings/ElectionDetailsLoading";
 
 const ElectionDetails = () => {
   const router = useRouter();
   const electionId = useParams().id;
   const [electionData, setElectionData] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const response = await axiosInstance.get(`/api/elections/${electionId}`);
       setElectionData(response.data.election);
+      setLoading(false);
     })();
   }, []);
+
+  if (loading) {
+    return <ElectionDetailsLoading />;
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-5xl">
