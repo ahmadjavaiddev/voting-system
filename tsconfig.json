@@ -22,6 +22,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/app/api/vote/route.js", "src/app/admin/dashboard/page.jsx", "src/app/api/elections/live/route.js", "src/app/user/dashboard/page.jsx", "src/middleware.js"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/app/api/vote/route.js", "src/app/admin/dashboard/page.jsx", "src/app/api/elections/live/route.js", "src/app/user/dashboard/page.jsx", "src/middleware.js", "src/app/api/admin/create-election/route.js"],
   "exclude": ["node_modules"]
 }

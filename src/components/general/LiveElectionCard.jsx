@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const LiveElectionCard = ({ election }) => {
+const LiveElectionCard = ({ election, isAdmin }) => {
   const router = useRouter();
 
   return (
@@ -54,11 +54,13 @@ const LiveElectionCard = ({ election }) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Link href={`/user/election/${election._id}`} className="w-full">
-          <Button className="w-full">Cast Your Vote</Button>
-        </Link>
-      </CardFooter>
+      {!isAdmin && (
+        <CardFooter>
+          <Link href={`/user/election/${election._id}`} className="w-full">
+            <Button className="w-full">Cast Your Vote</Button>
+          </Link>
+        </CardFooter>
+      )}
     </Card>
   );
 };

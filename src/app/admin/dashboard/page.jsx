@@ -1,131 +1,156 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { ElectionCreate } from "@/components/custom/election-create";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalendarClock, Clock, History } from "lucide-react";
+import LiveElectionCard from "@/components/general/LiveElectionCard";
+import UpcomingElectionCard from "@/components/general/UpcomingElectionCard";
+import PreviousElectionCard from "@/components/general/PreviousElectionCard";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import Link from "next/link";
 
 export default function AdminDashboard() {
-  const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState(null);
-  const [electionId, setElectionId] = useState("");
-  const [open, setOpen] = useState(false);
+  const [liveElections, setLiveElections] = useState([]);
+  const [upcomingElections, setUpcomingElections] = useState([]);
+  const [historyElections, setHistoryElections] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch unapproved users (for demo, fetch all users and filter client-side)
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     const res = await axios.get("/api/admin/users");
-  //     const data = res.data;
-  //     setUsers(data.users || []);
-  //   };
-  //   fetchUsers();
-  // }, []);
-
-  // const handleApprove = async (userId) => {
-  //   setLoading(true);
-  //   setMessage("");
-  //   setError("");
-  //   try {
-  //     const res = await axios.post("/api/admin/approve-user", { userId });
-  //     const data = res.data;
-  //     setMessage(data.message);
-  //     setUsers(users.filter((u) => u._id !== userId));
-  //   } catch (err) {
-  //     setError(err.response?.data?.error || "Approval failed");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  const handleGetResults = async () => {
-    setLoading(true);
-    setResults(null);
-    setError("");
+  const fetchLiveElectionsData = async () => {
     try {
-      const res = await axios.post("/api/admin/results", { electionId });
-      const data = res.data;
-      setResults(data.results);
-    } catch (err) {
-      setError(err.response?.data?.error || "Failed to fetch results");
-    } finally {
-      setLoading(false);
+      const response = await axios("/api/elections/live");
+      setLiveElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the live Data ::", error.message);
+    }
+  };
+  const fetchUpcomingElectionsData = async () => {
+    try {
+      const response = await axios("/api/elections/upcoming");
+      setUpcomingElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the upcoming Data ::", error.message);
+    }
+  };
+  const fetchPreviousElectionsData = async () => {
+    try {
+      const response = await axios("/api/elections/previous");
+      setHistoryElections(response?.data?.elections || []);
+    } catch (error) {
+      console.log("Error while Fetching the previous Data ::", error.message);
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    fetchLiveElectionsData();
+    fetchUpcomingElectionsData();
+    fetchPreviousElectionsData();
+  }, []);
 
   return (
-    <div className="max-w-2xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
-      {/* <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-2">Approve Users</h3>
-        {users.filter((u) => !u.isApproved && u.isVerified).length === 0 && (
-          <div>No users to approve.</div>
-        )}
-        {users
-          .filter((u) => !u.isApproved && u.isVerified)
-          .map((user) => (
-            <div
-              key={user._id}
-              className="mb-2 flex items-center justify-between bg-white p-2 rounded shadow"
-            >
-              <span>
-                {user.name} ({user.email})
-              </span>
-              <Button
-                onClick={() => handleApprove(user._id)}
-                disabled={loading}
-              >
-                Approve
-              </Button>
-            </div>
-          ))}
-      </div> */}
+    <main className="container mx-auto p-4 md:p-6">
+      {/* Create Election Button and Modal */}
+      <Link href="/admin/election/create">
+        <Button className="mb-6">Create Election</Button>
+      </Link>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>Open</DialogTrigger>
-        <DialogContent>
-          <DialogTitle></DialogTitle>
-          <ElectionCreate handleClose={handleClose} />
-        </DialogContent>
-      </Dialog>
+      <Tabs defaultValue="live" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="live" className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            <span>Live Elections</span>
+          </TabsTrigger>
+          <TabsTrigger value="upcoming" className="flex items-center gap-2">
+            <CalendarClock className="h-4 w-4" />
+            <span>Upcoming</span>
+          </TabsTrigger>
+          <TabsTrigger value="previous" className="flex items-center gap-2">
+            <History className="h-4 w-4" />
+            <span>Previous</span>
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-2">Live Results</h3>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          placeholder="Election ID"
-          value={electionId}
-          onChange={(e) => setElectionId(e.target.value)}
-        />
-        <Button onClick={handleGetResults} disabled={loading || !electionId}>
-          Get Results
-        </Button>
-        {results && (
-          <div className="mt-4 bg-white p-4 rounded shadow">
-            <h4 className="font-semibold mb-2">Results</h4>
-            <ul>
-              {Object.entries(results).map(([party, count]) => (
-                <li key={party}>
-                  {party}: {count}
-                </li>
-              ))}
-            </ul>
+        {/* Live Elections */}
+        <TabsContent value="live" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {liveElections?.length > 0 ? (
+              liveElections?.map((election) => (
+                <div key={election._id} className="relative">
+                  <LiveElectionCard election={election} isAdmin={true} />
+                  <Button size="sm" className="absolute top-2 right-2">
+                    View Results
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                <div className="rounded-full bg-muted p-3">
+                  <Clock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium">
+                  No live elections found
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {searchQuery
+                    ? "Try a different search term"
+                    : "Check back later for live elections"}
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      {message && <div className="text-green-600 mb-4">{message}</div>}
-      {error && <div className="text-red-600 mb-4">{error}</div>}
-    </div>
+        </TabsContent>
+
+        {/* Upcoming Elections */}
+        <TabsContent value="upcoming" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {upcomingElections.length > 0 ? (
+              upcomingElections?.map((election) => (
+                <UpcomingElectionCard election={election} key={election._id} />
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                <div className="rounded-full bg-muted p-3">
+                  <CalendarClock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium">
+                  No upcoming elections found
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {searchQuery
+                    ? "Try a different search term"
+                    : "Check back later for upcoming elections"}
+                </p>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        {/* Previous Elections */}
+        <TabsContent value="previous" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {historyElections?.length > 0 ? (
+              historyElections?.map((election) => (
+                <div key={election._id} className="relative">
+                  <PreviousElectionCard election={election} isAdmin={true} />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                <div className="rounded-full bg-muted p-3">
+                  <History className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium">
+                  No previous elections found
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {searchQuery
+                    ? "Try a different search term"
+                    : "Your election history will appear here"}
+                </p>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </main>
   );
 }

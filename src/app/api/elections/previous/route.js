@@ -14,7 +14,7 @@ export async function GET() {
       endTime: { $lt: now },
     });
 
-    return NextResponse.json({ elections });
+    return NextResponse.json({ elections: elections.reverse() });
   } catch (error) {
     console.log("Error While fetching the Elections ::", error.message);
     return NextResponse.json(
