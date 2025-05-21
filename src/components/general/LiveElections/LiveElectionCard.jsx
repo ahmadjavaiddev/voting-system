@@ -38,7 +38,7 @@ const LiveElectionCard = ({ election, isAdmin }) => {
             <span className="font-medium text-amber-600">
               {moment().isAfter(moment(election.endTime))
                 ? "Ended"
-                : moment(election.startTime).format("LLL")}
+                : moment(election.endTime).format("LLL")}
             </span>
           </div>
           <div className="mt-2">
