@@ -3,6 +3,7 @@ import dbConnect from "@/lib/db";
 import Vote from "@/models/Vote";
 import Election from "@/models/Election";
 import { verifyJWT } from "@/lib/index";
+import Candidate from "@/models/Candidate";
 
 function getToken(req) {
   const auth = req.headers.get("cookie");
@@ -68,11 +69,14 @@ export async function POST(req) {
 
     // Cast vote
     await Vote.create({ userId, electionId, candidateId });
+    await Candidate.updateOne({ _id: candidateId }, { $inc: { votes: 1 } });
+
     return NextResponse.json({
       message: "Vote cast successfully.",
       success: true,
     });
   } catch (error) {
+    console.log("Error in voting:", error.message);
     return NextResponse.json(
       { error: "Error While Voting in this election." },
       { status: 403 }
