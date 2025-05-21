@@ -36,6 +36,10 @@ export async function GET(request, { params }) {
       userHasVoted: !!already,
     };
 
+    if (already) {
+      result.userVote = already.candidateId;
+    }
+
     return NextResponse.json({ election: result });
   } catch (error) {
     console.log("Error While fetching the Election ::", error.message);
