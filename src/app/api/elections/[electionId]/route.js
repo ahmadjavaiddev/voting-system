@@ -14,7 +14,12 @@ export async function GET(request, { params }) {
     }
 
     await dbConnect();
-    const election = await Election.findById(electionId).lean();
+    const election = await Election.findById(electionId)
+      .populate(
+        "candidates",
+        "name image slogan members description votes platform winner"
+      )
+      .lean();
     if (!election) {
       return NextResponse.json(
         { error: "Election not found" },

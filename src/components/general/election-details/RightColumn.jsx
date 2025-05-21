@@ -152,9 +152,11 @@ const RightColumn = ({ election, isAdmin = false }) => {
                       />
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <div
-                            className={`h-3 w-3 rounded-full ${candidate.color}`}
-                          ></div>
+                          <img
+                            src={candidate.image}
+                            alt={candidate.name}
+                            className="h-8 w-8 rounded-full"
+                          />
                           <h3 className="font-medium">{candidate.name}</h3>
                         </div>
                         <p className="text-sm italic text-muted-foreground">
@@ -166,7 +168,20 @@ const RightColumn = ({ election, isAdmin = false }) => {
                           </h4>
                           <ul className="mt-1 text-sm">
                             {candidate.members?.map((member, index) => (
-                              <li key={index}>{member}</li>
+                              <li
+                                key={index}
+                                className="flex items-start gap-2 text-sm"
+                              >
+                                <img
+                                  src={member.image}
+                                  alt={member.name}
+                                  className="h-4 w-4 rounded-full"
+                                />
+                                <span>{member.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  ({member.role})
+                                </span>
+                              </li>
                             ))}
                           </ul>
                         </div>
