@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import { validateJWTToken } from "@/lib/index";
 import Election from "@/models/Election";
+import Candidate from "@/models/Candidate";
 
 export async function POST(req) {
   try {
@@ -10,40 +11,29 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await dbConnect();
-
-    const {
-      title,
-      description,
-      startTime,
-      endTime,
-      eligibleVoters,
-      rules,
-      candidates,
-    } = await req.json();
-
-    if (
-      validateElectionData(
-        title,
-        description,
-        startTime,
-        endTime,
-        eligibleVoters,
-        rules,
-        candidates
-      )
-    ) {
+    const body = await req.json();
+    if (validateElectionData(body)) {
       return NextResponse.json({ error: "Invalid data." }, { status: 400 });
     }
 
+    if (body.candidates.length < 2) {
+      return NextResponse.json(
+        { error: "There must be at least 2 candidates." },
+        { status: 400 }
+      );
+    }
+
+    await dbConnect();
+    const candidatesID = await createCandidates(body.candidates);
+
     const election = await Election.create({
-      title,
-      candidates,
-      description,
-      eligibleVoters,
-      rules,
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
+      title: body.title,
+      candidates: candidatesID,
+      description: body.description,
+      eligibleVoters: body.eligibleVoters,
+      rules: body.rules,
+      startTime: new Date(body.startTime),
+      endTime: new Date(body.endTime),
     });
 
     return NextResponse.json({ message: "Election created.", election });
@@ -56,29 +46,36 @@ export async function POST(req) {
   }
 }
 
-function validateElectionData(
-  title,
-  description,
-  startTime,
-  endTime,
-  eligibleVoters,
-  rules,
-  candidates
-) {
+function validateElectionData(body) {
   return (
     [
-      title,
-      description,
-      startTime,
-      endTime,
-      eligibleVoters,
-      rules,
-      candidates,
+      body.title,
+      body.description,
+      body.startTime,
+      body.endTime,
+      body.eligibleVoters,
+      body.rules,
+      body.candidates,
     ].every((item) => !item) ||
-    !Array.isArray(candidates) ||
-    candidates.length < 2 ||
-    eligibleVoters < 3 ||
-    !Array.isArray(rules) ||
-    rules.length < 1
+    !Array.isArray(body.candidates) ||
+    body.candidates.length < 2 ||
+    body.eligibleVoters < 3 ||
+    !Array.isArray(body.rules) ||
+    body.rules.length < 1
   );
+}
+
+async function createCandidates(candidates) {
+  const candidatesID = [];
+  for (const candidate of candidates) {
+    const newCandidate = await Candidate.create({
+      name: candidate.name,
+      image: candidate.image,
+      slogan: candidate.slogan,
+      members: candidate.members,
+      description: candidate.description,
+    });
+    candidatesID.push(newCandidate._id);
+  }
+  return candidatesID;
 }
