@@ -14,6 +14,7 @@ const ElectionSchema = new Schema(
       enum: ["upcoming", "live", "ended"],
       default: "upcoming",
     },
+    totalVotes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
 import axiosInstance from "@/lib/axios";
 import ElectionDetailsLoading from "@/components/general/loadings/ElectionDetailsLoading";
+import BackButton from "@/components/custom/BackButton";
 
 const ElectionDetails = () => {
   const router = useRouter();
@@ -29,15 +30,7 @@ const ElectionDetails = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-6xl">
-      <Button
-        variant="ghost"
-        size="sm"
-        className="mb-4 flex items-center gap-1 text-muted-foreground"
-        onClick={() => router.push("/user/dashboard")}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
-      </Button>
+      <BackButton url="/user/dashboard" />
       <ElectionHeader election={electionData} isAdmin={false} />
       <div className="grid gap-6 md:grid-cols-3">
         <LeftColumn election={electionData} isAdmin={false} />
