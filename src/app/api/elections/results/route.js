@@ -7,7 +7,7 @@ export async function GET() {
     await dbConnect();
     const elections = await Election.find().populate(
       "candidates",
-      "name image slogan members description votes platform winner"
+      "name image slogan color members description votes platform winner"
     );
 
     return NextResponse.json({ elections: elections.reverse() });

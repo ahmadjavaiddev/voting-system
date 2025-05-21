@@ -72,6 +72,7 @@ async function createCandidates(candidates) {
       name: candidate.name,
       image: candidate.image,
       slogan: candidate.slogan,
+      color: candidate.color,
       members: candidate.members,
       description: candidate.description,
     });

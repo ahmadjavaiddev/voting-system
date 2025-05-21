@@ -1,24 +1,22 @@
 import moment from "moment";
 import React from "react";
 
-const ElectionStats = ({ selectedElection }) => {
-  const calculatePercentage = (part, total) => {
-    if (total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
-
+const ElectionStats = ({
+  selectedElection,
+  totalCastVotes,
+  calculatePercentage,
+}) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Total Votes</div>
-        <div className="text-xl font-semibold">
-          {selectedElection.totalVotes}
-        </div>
+        <div className="text-xl font-semibold">{totalCastVotes}</div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Turnout</div>
         <div className="text-xl font-semibold">
-          {calculatePercentage(selectedElection.totalVotes, 950)}%
+          {calculatePercentage(totalCastVotes, selectedElection.eligibleVoters)}
+          %
         </div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">

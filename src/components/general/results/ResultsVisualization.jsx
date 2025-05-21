@@ -1,11 +1,6 @@
 import React from "react";
 
-const ResultsVisualization = ({ selectedElection }) => {
-  const calculatePercentage = (part, total) => {
-    if (total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
-
+const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4">Current Results</h3>
@@ -37,7 +32,9 @@ const ResultsVisualization = ({ selectedElection }) => {
             <div className="relative pt-1">
               <div className="flex mb-2 items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-muted/80">
+                  <span
+                    className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-[${candidate.color}]`}
+                  >
                     {candidate.slogan}
                   </span>
                 </div>
@@ -47,10 +44,10 @@ const ResultsVisualization = ({ selectedElection }) => {
                   style={{
                     width: `${calculatePercentage(
                       candidate.votes,
-                      selectedElection.totalVotes
+                      selectedElection.eligibleVoters
                     )}%`,
                   }}
-                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-600`}
+                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[${candidate.color}]`}
                 >
                   {calculatePercentage(
                     candidate.votes,

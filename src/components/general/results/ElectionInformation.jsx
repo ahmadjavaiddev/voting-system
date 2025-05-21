@@ -2,12 +2,7 @@ import { Info } from "lucide-react";
 import moment from "moment";
 import React from "react";
 
-const ElectionInformation = ({ selectedElection }) => {
-  const calculatePercentage = (part, total) => {
-    if (total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
-
+const ElectionInformation = ({ selectedElection, calculatePercentage }) => {
   return (
     <div className="bg-muted/20 p-4 rounded-lg">
       <div className="flex items-center gap-2 mb-2">

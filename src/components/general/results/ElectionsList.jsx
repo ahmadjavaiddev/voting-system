@@ -17,6 +17,8 @@ const ElectionsList = ({
   setSelectedElection,
   liveElections,
   setLiveElections,
+  totalCastVotes,
+  calculatePercentage,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -33,11 +35,6 @@ const ElectionsList = ({
 
     getLiveElections();
   }, []);
-
-  const calculatePercentage = (part, total) => {
-    if (total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
 
   return (
     <div className="lg:col-span-1 space-y-4">
@@ -72,22 +69,19 @@ const ElectionsList = ({
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-muted-foreground">Votes:</span>
                 <span className="font-medium">
-                  {election.totalVotes} / {election.eligibleVoters}
+                  {totalCastVotes} / {election.eligibleVoters}
                 </span>
               </div>
               <Progress
                 value={calculatePercentage(
-                  election.totalVotes,
+                  totalCastVotes,
                   election.eligibleVoters
                 )}
                 className="h-2"
               />
               <div className="flex justify-between text-xs mt-1">
                 <span className="text-muted-foreground">
-                  {calculatePercentage(
-                    election.totalVotes,
-                    election.eligibleVoters
-                  )}
+                  {calculatePercentage(totalCastVotes, election.eligibleVoters)}
                   % Turnout
                 </span>
                 <span className="text-muted-foreground">
