@@ -46,11 +46,10 @@ const RightColumn = ({ election, isAdmin = false }) => {
   const handleVoteSubmit = async () => {
     try {
       if (!selectedCandidate) return;
-
       setIsVoting(true);
       const response = await axios.post("/api/vote", {
         electionId: election._id,
-        candidate: selectedCandidate,
+        candidateId: selectedCandidate,
       });
 
       if (response.data.success) {
@@ -225,7 +224,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
             </CardHeader>
             <CardContent className="space-y-6">
               {election.candidates?.map((candidate) => (
-                <div key={candidate.id} className="space-y-2">
+                <div key={candidate._id} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div

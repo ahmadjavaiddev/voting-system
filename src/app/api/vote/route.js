@@ -18,7 +18,7 @@ async function faceRecognition(userId) {
 export async function POST(req) {
   try {
     await dbConnect();
-    const { electionId, party } = await req.json();
+    const { electionId, candidateId } = await req.json();
 
     const token = getToken(req);
     if (!token) {
@@ -29,7 +29,9 @@ export async function POST(req) {
     if (!payload) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
+
     const userId = payload.userId;
+
     // Face recognition check
     const faceOk = await faceRecognition(userId);
     if (!faceOk) {
@@ -38,6 +40,7 @@ export async function POST(req) {
         { status: 403 }
       );
     }
+
     const election = await Election.findById(electionId);
     if (!election) {
       return NextResponse.json(
@@ -45,6 +48,7 @@ export async function POST(req) {
         { status: 404 }
       );
     }
+
     const now = new Date();
     if (now < election.startTime || now > election.endTime) {
       return NextResponse.json(
@@ -52,6 +56,7 @@ export async function POST(req) {
         { status: 403 }
       );
     }
+
     // Check if user already voted
     const already = await Vote.findOne({ userId, electionId });
     if (already) {
@@ -60,14 +65,14 @@ export async function POST(req) {
         { status: 403 }
       );
     }
+
     // Cast vote
-    await Vote.create({ userId, electionId, party });
+    await Vote.create({ userId, electionId, candidateId });
     return NextResponse.json({
       message: "Vote cast successfully.",
       success: true,
     });
   } catch (error) {
-    console.log("Error in the Vote Route");
     return NextResponse.json(
       { error: "Error While Voting in this election." },
       { status: 403 }

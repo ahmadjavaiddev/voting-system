@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, models } from "mongoose";
 export interface IVote extends Document {
   userId: mongoose.Types.ObjectId;
   electionId: mongoose.Types.ObjectId;
-  party: string;
+  candidateId: mongoose.Types.ObjectId;
   timestamp: Date;
 }
 
@@ -15,7 +15,11 @@ const VoteSchema = new Schema<IVote>(
       ref: "Election",
       required: true,
     },
-    party: { type: String, required: true },
+    candidateId: {
+      type: Schema.Types.ObjectId,
+      ref: "Candidate",
+      required: true,
+    },
   },
   { timestamps: true }
 );
