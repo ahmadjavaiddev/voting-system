@@ -20,7 +20,7 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
                 <span className="text-lg font-semibold">
                   {calculatePercentage(
                     candidate.votes,
-                    selectedElection.totalVotes
+                    selectedElection.eligibleVoters || 1500
                   )}
                   %
                 </span>
