@@ -57,11 +57,18 @@ import z from "zod";
 import axios from "axios";
 
 // Define the form schema with Zod
+const memberSchema = z.object({
+  name: z.string().min(1, "Member name is required"),
+  image: z.string().url("Image URL is required"),
+  role: z.string().min(1, "Role is required"),
+});
+
 const candidateSchema = z.object({
   name: z.string().min(1, "Party name is required"),
   slogan: z.string().min(1, "Slogan is required"),
   color: z.string().min(1, "Color is required"),
-  members: z.array(z.string().min(1, "Member name is required")),
+  image: z.string().url("Image URL is required"),
+  members: z.array(memberSchema).min(1, "At least one member is required"),
   platform: z.array(z.string().min(1, "Platform point is required")),
 });
 
@@ -112,14 +119,16 @@ export default function CreateElectionForm() {
           name: "",
           slogan: "",
           color: "bg-blue-500",
-          members: [""],
+          image: "",
+          members: [{ name: "", image: "", role: "" }],
           platform: [""],
         },
         {
           name: "",
           slogan: "",
           color: "bg-green-500",
-          members: [""],
+          image: "",
+          members: [{ name: "", image: "", role: "" }],
           platform: [""],
         },
       ],
@@ -157,7 +166,8 @@ export default function CreateElectionForm() {
       setTimeout(() => router.push("/admin/dashboard"), 1200);
     } catch (error) {
       setSubmitError(
-        error?.response?.data?.error || "Failed to create election. Please try again."
+        error?.response?.data?.error ||
+          "Failed to create election. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -477,24 +487,74 @@ export default function CreateElectionForm() {
                         )}
                       />
 
+                      <FormField
+                        control={form.control}
+                        name={`candidates.${candidateIndex}.image`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Party/Candidate Image URL</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://example.com/image.jpg"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       {/* Members */}
                       <div className="space-y-2">
                         <FormLabel>Members</FormLabel>
                         {form
                           .watch(`candidates.${candidateIndex}.members`)
-                          .map((_, memberIndex) => (
+                          .map((member, memberIndex) => (
                             <div
                               key={memberIndex}
-                              className="flex items-start gap-2"
+                              className="flex flex-col md:flex-row gap-2 mb-2 border p-2 rounded"
                             >
                               <FormField
                                 control={form.control}
-                                name={`candidates.${candidateIndex}.members.${memberIndex}`}
+                                name={`candidates.${candidateIndex}.members.${memberIndex}.name`}
                                 render={({ field }) => (
                                   <FormItem className="flex-1">
+                                    <FormLabel>Name</FormLabel>
                                     <FormControl>
                                       <Input
-                                        placeholder="e.g., Alex Johnson (President)"
+                                        placeholder="e.g., Sarah Johnson"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`candidates.${candidateIndex}.members.${memberIndex}.image`}
+                                render={({ field }) => (
+                                  <FormItem className="flex-1">
+                                    <FormLabel>Image URL</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="https://example.com/member.jpg"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`candidates.${candidateIndex}.members.${memberIndex}.role`}
+                                render={({ field }) => (
+                                  <FormItem className="flex-1">
+                                    <FormLabel>Role</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="e.g., Presidential Candidate"
                                         {...field}
                                       />
                                     </FormControl>
@@ -507,21 +567,25 @@ export default function CreateElectionForm() {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => {
-                                  const currentMembers = form.getValues(
+                                  const members = form.getValues(
                                     `candidates.${candidateIndex}.members`
                                   );
-                                  const newMembers = [...currentMembers];
-                                  newMembers.splice(memberIndex, 1);
-                                  form.setValue(
-                                    `candidates.${candidateIndex}.members`,
-                                    newMembers
-                                  );
+                                  if (members.length > 1) {
+                                    const updated = members.filter(
+                                      (_, i) => i !== memberIndex
+                                    );
+                                    form.setValue(
+                                      `candidates.${candidateIndex}.members`,
+                                      updated
+                                    );
+                                  }
                                 }}
                                 disabled={
                                   form.watch(
                                     `candidates.${candidateIndex}.members`
                                   ).length <= 1
                                 }
+                                className="self-end"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -531,13 +595,14 @@ export default function CreateElectionForm() {
                           type="button"
                           variant="outline"
                           size="sm"
+                          className="mt-2"
                           onClick={() => {
-                            const currentMembers = form.getValues(
+                            const members = form.getValues(
                               `candidates.${candidateIndex}.members`
                             );
                             form.setValue(
                               `candidates.${candidateIndex}.members`,
-                              [...currentMembers, ""]
+                              [...members, { name: "", image: "", role: "" }]
                             );
                           }}
                         >
@@ -550,7 +615,7 @@ export default function CreateElectionForm() {
                         <FormLabel>Platform Points</FormLabel>
                         {form
                           .watch(`candidates.${candidateIndex}.platform`)
-                          .map((_, pointIndex) => (
+                          ?.map((_, pointIndex) => (
                             <div
                               key={pointIndex}
                               className="flex items-start gap-2"
@@ -638,7 +703,8 @@ export default function CreateElectionForm() {
                     name: "",
                     slogan: "",
                     color: "bg-blue-500",
-                    members: [""],
+                    image: "",
+                    members: [{ name: "", image: "", role: "" }],
                     platform: [""],
                   })
                 }
