@@ -38,6 +38,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
   const [showFaceAuthDialog, setShowFaceAuthDialog] = useState(false);
   const [isFaceAuthenticated, setIsFaceAuthenticated] = useState(false);
   const [capturedDescriptor, setCapturedDescriptor] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     setHasVoted(election.userHasVoted);
@@ -52,6 +53,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
   // Handle vote submission
   const handleVoteSubmit = async () => {
     try {
+      setErrorMessage("");
       if (!selectedCandidate || !capturedDescriptor) return;
       setIsVoting(true);
       const response = await axios.post("/api/vote", {
@@ -66,9 +68,18 @@ const RightColumn = ({ election, isAdmin = false }) => {
         setHasVoted(true);
         setShowSuccessDialog(true);
         setCapturedDescriptor(null);
+        setErrorMessage("");
+      } else if (response.data.error) {
+        setErrorMessage(response.data.error);
+        setIsVoting(false);
       }
     } catch (error) {
-      console.log("Error While vote submiting ::", error.message);
+      setIsVoting(false);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -100,6 +111,15 @@ const RightColumn = ({ election, isAdmin = false }) => {
           <AlertDescription>
             Election has been ended. Better luck for the next time.
           </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Alert for error */}
+      {errorMessage && (
+        <Alert className="mb-6 border-red-200 bg-red-100 text-red-800">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       )}
 
@@ -169,7 +189,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                             alt={candidate.name}
                             className="h-8 w-8 rounded-full"
                           />
-                          <h3 className="font-medium">{candidate.name} {candidate._id}</h3>
+                          <h3 className="font-medium">{candidate.name}</h3>
                         </div>
                         <p className="text-sm italic text-muted-foreground">
                           "{candidate.slogan}"
