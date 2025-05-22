@@ -3,6 +3,7 @@ import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
 import { validateJWTToken } from "@/lib/index";
 import Vote from "@/models/Vote";
+import mongoose from "mongoose";
 
 export async function GET(request, { params }) {
   try {
@@ -14,13 +15,42 @@ export async function GET(request, { params }) {
     }
 
     await dbConnect();
-    const election = await Election.findById(electionId)
-      .populate(
-        "candidates",
-        "name image slogan members description votes platform winner"
-      )
-      .lean();
-    if (!election) {
+    const response = await Election.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(electionId) },
+      },
+      {
+        $lookup: {
+          from: "candidates",
+          localField: "candidates",
+          foreignField: "_id",
+          as: "candidates",
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          startTime: 1,
+          endTime: 1,
+          eligibleVoters: 1,
+          rules: 1,
+          candidates: {
+            name: 1,
+            image: 1,
+            slogan: 1,
+            members: 1,
+            description: 1,
+            votes: 1,
+            platform: 1,
+            winner: 1,
+          },
+        },
+      },
+    ]);
+    const election = response[0];
+
+    if (!election || response.length === 0) {
       return NextResponse.json(
         { error: "Election not found" },
         { status: 404 }
@@ -42,7 +72,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({ election: result });
   } catch (error) {
-    console.log("Error While fetching the Election ::", error.message);
+    console.log("/api/elections/[electionId] ::", error);
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 405 }
