@@ -5,9 +5,17 @@ import LiveElectionsTab from "@/components/general/LiveElections/LiveElectionsTa
 import UpcomingElectionsTab from "@/components/general/UpcomingElections/UpcomingElectionsTab";
 import PreviousElectionsTab from "@/components/general/PreviousElections/PreviousElectionsTab";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 
 export default function UserDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserDashboardContent />
+    </Suspense>
+  );
+}
+
+function UserDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");

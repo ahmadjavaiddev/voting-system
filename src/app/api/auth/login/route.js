@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -6,7 +6,7 @@ import { SignJWT } from "jose";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
-async function signJWT(payload: any) {
+async function signJWT(payload) {
   const secret = new TextEncoder().encode(JWT_SECRET);
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -15,7 +15,7 @@ async function signJWT(payload: any) {
     .sign(secret);
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req) {
   await dbConnect();
   const { email, password } = await req.json();
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).exec();
   if (!user) {
     return NextResponse.json(
       { error: "Invalid credentials." },

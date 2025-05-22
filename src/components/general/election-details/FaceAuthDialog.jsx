@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import * as faceapi from "face-api.js";
 
 const MODEL_URL = "/models";
 
@@ -11,14 +10,21 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
   const [modelsLoaded, setModelsLoaded] = useState(false);
 
   useEffect(() => {
+    let faceapi;
+    let modelsLoadedFlag = false;
+    async function loadAll() {
+      faceapi = await import("face-api.js");
+      await loadModels(faceapi);
+      modelsLoadedFlag = true;
+    }
     if (open) {
       startVideo();
-      loadModels();
+      loadAll();
     }
     return () => stopVideo();
   }, [open]);
 
-  const loadModels = async () => {
+  const loadModels = async (faceapi) => {
     setLoading(true);
     await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
     await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
@@ -50,6 +56,7 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
       canvas.height = videoRef.current.videoHeight;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const faceapi = await import("face-api.js");
       const detection = await faceapi
         .detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
