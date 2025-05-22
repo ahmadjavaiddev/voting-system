@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import {
   Sidebar,
   SidebarHeader,
@@ -8,7 +9,15 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { CalendarCheck2, History, Trophy, Users, Settings, BarChart2 } from "lucide-react";
+import {
+  CalendarCheck2,
+  History,
+  Trophy,
+  Users,
+  Settings,
+  BarChart2,
+  PlusCircle,
+} from "lucide-react";
 
 const AdminSidebar = () => {
   return (
@@ -23,33 +32,35 @@ const AdminSidebar = () => {
       <SidebarContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive>
-              <Trophy />
-              <span>Dashboard</span>
+            <SidebarMenuButton asChild isActive>
+              <Link href="/admin/dashboard">
+                <Trophy />
+                <span>Dashboard</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <CalendarCheck2 />
-              <span>Manage Elections</span>
+            <SidebarMenuButton asChild>
+              <Link href="/admin/election/create">
+                <PlusCircle />
+                <span>Create Election</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Users />
-              <span>Users</span>
+            <SidebarMenuButton asChild>
+              <Link href="/admin/election/results">
+                <BarChart2 />
+                <span>Results</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <BarChart2 />
-              <span>Results</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Settings />
-              <span>Settings</span>
+            <SidebarMenuButton asChild>
+              <Link href="/admin/settings">
+                <Settings />
+                <span>Settings</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -69,4 +80,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar; 
+export default AdminSidebar;
