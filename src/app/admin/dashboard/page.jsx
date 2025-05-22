@@ -4,11 +4,26 @@ import { CalendarClock, Clock, History } from "lucide-react";
 import LiveElectionsTab from "@/components/general/LiveElections/LiveElectionsTab";
 import UpcomingElectionsTab from "@/components/general/UpcomingElections/UpcomingElectionsTab";
 import PreviousElectionsTab from "@/components/general/PreviousElections/PreviousElectionsTab";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 
 export default function AdminDashboard() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const validTabs = ["live", "upcoming", "previous"];
+  const initialTab = validTabs.includes(tabParam) ? tabParam : "live";
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Keep tab in sync with URL changes
+  useMemo(() => {
+    if (validTabs.includes(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
   return (
     <main className="container mx-auto p-4 md:p-6">
-      <Tabs defaultValue="live" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="live" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />

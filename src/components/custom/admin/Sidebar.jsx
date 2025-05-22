@@ -49,6 +49,30 @@ const AdminSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
+              <Link href="/admin/dashboard?tab=live">
+                <CalendarCheck2 />
+                <span>Live Elections</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/admin/dashboard?tab=upcoming">
+                <CalendarCheck2 />
+                <span>Upcoming Elections</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/admin/dashboard?tab=previous">
+                <CalendarCheck2 />
+                <span>Previous Elections</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
               <Link href="/admin/election/results">
                 <BarChart2 />
                 <span>Results</span>

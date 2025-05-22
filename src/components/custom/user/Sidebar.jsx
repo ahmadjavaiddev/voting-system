@@ -8,7 +8,17 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { CalendarCheck2, History, Trophy, Vote } from "lucide-react";
+import {
+  BarChart2,
+  CalendarCheck2,
+  History,
+  ListVideo,
+  PlusCircle,
+  Settings,
+  Trophy,
+  Vote,
+} from "lucide-react";
+import Link from "next/link";
 
 const UserSidebar = () => {
   return (
@@ -23,27 +33,59 @@ const UserSidebar = () => {
       <SidebarContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive>
-              <Trophy />
-              <span>Elections</span>
+            <SidebarMenuButton asChild isActive>
+              <Link href="/user/dashboard">
+                <Trophy />
+                <span>Dashboard</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Vote />
-              <span>My Votes</span>
+            <SidebarMenuButton asChild>
+              <Link href="/user/election/create">
+                <PlusCircle />
+                <span>Create Election</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <History />
-              <span>History</span>
+            <SidebarMenuButton asChild>
+              <Link href="/user/dashboard?tab=live">
+                <ListVideo />
+                <span>Live Elections</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <CalendarCheck2 />
-              <span>Calendar</span>
+            <SidebarMenuButton asChild>
+              <Link href="/user/dashboard?tab=upcoming">
+                <CalendarCheck2 />
+                <span>Upcoming Elections</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/user/dashboard?tab=previous">
+                <CalendarCheck2 />
+                <span>Previous Elections</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/user/election/results">
+                <BarChart2 />
+                <span>Results</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/user/settings">
+                <Settings />
+                <span>Settings</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
