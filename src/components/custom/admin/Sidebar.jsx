@@ -13,10 +13,10 @@ import {
   CalendarCheck2,
   History,
   Trophy,
-  Users,
   Settings,
   BarChart2,
   PlusCircle,
+  ListVideo,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -50,7 +50,7 @@ const AdminSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/admin/dashboard?tab=live">
-                <CalendarCheck2 />
+                <ListVideo />
                 <span>Live Elections</span>
               </Link>
             </SidebarMenuButton>
@@ -66,7 +66,7 @@ const AdminSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/admin/dashboard?tab=previous">
-                <CalendarCheck2 />
+                <History />
                 <span>Previous Elections</span>
               </Link>
             </SidebarMenuButton>

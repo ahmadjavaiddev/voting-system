@@ -13,7 +13,6 @@ import {
   CalendarCheck2,
   History,
   ListVideo,
-  PlusCircle,
   Settings,
   Trophy,
   Vote,
@@ -42,14 +41,6 @@ const UserSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/user/election/create">
-                <PlusCircle />
-                <span>Create Election</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
               <Link href="/user/dashboard?tab=live">
                 <ListVideo />
                 <span>Live Elections</span>
@@ -67,7 +58,7 @@ const UserSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/user/dashboard?tab=previous">
-                <CalendarCheck2 />
+                <History />
                 <span>Previous Elections</span>
               </Link>
             </SidebarMenuButton>
