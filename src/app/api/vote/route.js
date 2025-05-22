@@ -4,6 +4,8 @@ import Vote from "@/models/Vote";
 import Election from "@/models/Election";
 import { verifyJWT } from "@/lib/index";
 import Candidate from "@/models/Candidate";
+import User from "@/models/User";
+import * as faceapi from "face-api.js";
 
 function getToken(req) {
   const auth = req.headers.get("cookie");
@@ -11,15 +13,32 @@ function getToken(req) {
   return auth.replace("token=", "");
 }
 
-// Mock face recognition (always true for demo)
-async function faceRecognition(userId) {
-  return true;
+function compareDescriptors(descriptor1, descriptor2) {
+  return faceapi.euclideanDistance(descriptor1, descriptor2) < 0.5;
+}
+
+async function faceRecognition(userId, submittedDescriptor) {
+  // Fetch user from DB
+  const user = await User.findById(userId);
+  if (!user || !user.faceId) return false;
+  let referenceDescriptor;
+  try {
+    referenceDescriptor = JSON.parse(user.faceId);
+  } catch {
+    return false;
+  }
+  return compareDescriptors(referenceDescriptor, submittedDescriptor);
 }
 
 export async function POST(req) {
   try {
-    await dbConnect();
-    const { electionId, candidateId } = await req.json();
+    const { electionId, candidateId, userDescriptor } = await req.json();
+    if (!electionId || !candidateId || !userDescriptor) {
+      return NextResponse.json(
+        { error: "Missing required fields." },
+        { status: 400 }
+      );
+    }
 
     const token = getToken(req);
     if (!token) {
@@ -32,9 +51,13 @@ export async function POST(req) {
     }
 
     const userId = payload.userId;
+    if (!userId) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
 
+    await dbConnect();
     // Face recognition check
-    const faceOk = await faceRecognition(userId);
+    const faceOk = await faceRecognition(userId, userDescriptor);
     if (!faceOk) {
       return NextResponse.json(
         { error: "Face recognition failed." },

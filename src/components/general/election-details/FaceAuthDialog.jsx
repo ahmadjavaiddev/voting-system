@@ -1,17 +1,31 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import * as faceapi from "face-api.js";
+
+const MODEL_URL = "/models";
 
 const FaceAuthDialog = ({ open, onClose, onCapture }) => {
   const videoRef = useRef();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [modelsLoaded, setModelsLoaded] = useState(false);
 
   useEffect(() => {
     if (open) {
       startVideo();
+      loadModels();
     }
     return () => stopVideo();
   }, [open]);
+
+  const loadModels = async () => {
+    setLoading(true);
+    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+    setModelsLoaded(true);
+    setLoading(false);
+  };
 
   const startVideo = () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -36,11 +50,20 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
       canvas.height = videoRef.current.videoHeight;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL("image/jpeg");
-      onCapture(imageData);
+      const detection = await faceapi
+        .detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+      if (!detection) {
+        setError("No face detected. Please try again.");
+        setLoading(false);
+        return;
+      }
+      const descriptor = Array.from(detection.descriptor);
+      onCapture(descriptor);
       onClose();
     } catch (err) {
-      setError("Error capturing image. Please try again.");
+      setError("Error capturing or processing image. Please try again.");
     }
     setLoading(false);
   };
@@ -55,7 +78,7 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
         {error && <div className="text-red-500 mb-2">{error}</div>}
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleCapture} disabled={loading}>Capture & Continue</Button>
+          <Button onClick={handleCapture} disabled={loading || !modelsLoaded}>Capture & Continue</Button>
         </div>
       </div>
     </div>
