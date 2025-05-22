@@ -1,4 +1,5 @@
 import React from "react";
+import { Progress } from "@/components/ui/progress";
 
 const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
   return (
@@ -33,36 +34,37 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
               <div className="flex mb-2 items-center justify-between">
                 <div>
                   <span
-                    className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-[${candidate.color}]`}
+                    className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white"
+                    style={{ backgroundColor: candidate.color }}
                   >
                     {candidate.slogan}
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-6 text-xs flex rounded-full bg-muted/30">
-                <div
-                  style={{
-                    width: `${calculatePercentage(
-                      candidate.votes,
-                      selectedElection.eligibleVoters
-                    )}%`,
-                  }}
-                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[${candidate.color}]`}
-                >
+              {/* Progress with custom indicator color */}
+              <div className="relative">
+                <Progress
+                  value={calculatePercentage(
+                    candidate.votes,
+                    selectedElection.eligibleVoters
+                  )}
+                  className="h-4"
+                  indicatorClassName={`bg-[${candidate.color}]`}
+                />
+                <span>{candidate.color}</span>
+              </div>
+              {calculatePercentage(
+                candidate.votes,
+                selectedElection.totalVotes
+              ) > 10 && (
+                <span className="px-2 font-semibold text-teal-600 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   {calculatePercentage(
                     candidate.votes,
                     selectedElection.totalVotes
-                  ) > 10 && (
-                    <span className="px-2 font-semibold">
-                      {calculatePercentage(
-                        candidate.votes,
-                        selectedElection.totalVotes
-                      )}
-                      %
-                    </span>
                   )}
-                </div>
-              </div>
+                  %
+                </span>
+              )}
             </div>
           </div>
         ))}
