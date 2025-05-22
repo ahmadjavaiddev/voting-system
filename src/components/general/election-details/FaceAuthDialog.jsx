@@ -54,16 +54,26 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
         .detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceDescriptor();
+      stopVideo();
       if (!detection) {
         setError("No face detected. Please try again.");
         setLoading(false);
+        setTimeout(() => {
+          setError("");
+          onClose();
+        }, 1500);
         return;
       }
       const descriptor = Array.from(detection.descriptor);
       onCapture(descriptor);
       onClose();
     } catch (err) {
+      stopVideo();
       setError("Error capturing or processing image. Please try again.");
+      setTimeout(() => {
+        setError("");
+        onClose();
+      }, 1500);
     }
     setLoading(false);
   };
@@ -77,7 +87,7 @@ const FaceAuthDialog = ({ open, onClose, onCapture }) => {
         <video ref={videoRef} autoPlay width="320" height="240" className="rounded border mb-2" />
         {error && <div className="text-red-500 mb-2">{error}</div>}
         <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" onClick={() => { stopVideo(); onClose(); }}>Cancel</Button>
           <Button onClick={handleCapture} disabled={loading || !modelsLoaded}>Capture & Continue</Button>
         </div>
       </div>

@@ -44,11 +44,13 @@ const RightColumn = ({ election, isAdmin = false }) => {
     setHasVoted(election.userHasVoted);
   }, [election.userHasVoted]);
 
-  const electionEnded = getTimeEnded(election.endTime);
-  const votingDisabled = hasVoted || electionEnded || isAdmin;
+  useEffect(() => {
+    if (errorMessage) {
+      setShowConfirmDialog(false);
+    }
+  }, [errorMessage]);
 
-  // Reference image from user profile (adjust as needed)
-  const referenceImageUrl = election.userProfileImage;
+  const electionEnded = getTimeEnded(election.endTime);
 
   // Handle vote submission
   const handleVoteSubmit = async () => {
@@ -179,7 +181,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                         value={candidate._id}
                         id={candidate._id}
                         checked={selectedCandidate === candidate._id}
-                        onClick={e => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute right-4 top-4"
                       />
                       <div className="space-y-3">
