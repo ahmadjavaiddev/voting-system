@@ -36,6 +36,7 @@ export async function GET(request, { params }) {
           eligibleVoters: 1,
           rules: 1,
           candidates: {
+            _id: 1,
             name: 1,
             image: 1,
             slogan: 1,

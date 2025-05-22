@@ -26,6 +26,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
 import { getTimeEnded } from "@/lib/index";
+import FaceAuthDialog from "./FaceAuthDialog";
 
 const RightColumn = ({ election, isAdmin = false }) => {
   const [selectedCandidate, setSelectedCandidate] = useState("");
@@ -34,6 +35,8 @@ const RightColumn = ({ election, isAdmin = false }) => {
   const [hasVoted, setHasVoted] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+  const [showFaceAuthDialog, setShowFaceAuthDialog] = useState(false);
+  const [isFaceAuthenticated, setIsFaceAuthenticated] = useState(false);
 
   useEffect(() => {
     setHasVoted(election.userHasVoted);
@@ -41,6 +44,9 @@ const RightColumn = ({ election, isAdmin = false }) => {
 
   const electionEnded = getTimeEnded(election.endTime);
   const votingDisabled = hasVoted || electionEnded || isAdmin;
+
+  // Reference image from user profile (adjust as needed)
+  const referenceImageUrl = election.userProfileImage;
 
   // Handle vote submission
   const handleVoteSubmit = async () => {
@@ -139,15 +145,18 @@ const RightColumn = ({ election, isAdmin = false }) => {
                   {election.candidates?.map((candidate) => (
                     <div
                       key={candidate._id}
-                      className={`relative rounded-lg border p-4 transition-all hover:bg-accent ${
+                      className={`relative rounded-lg border p-4 transition-all hover:bg-accent cursor-pointer ${
                         selectedCandidate === candidate._id
                           ? "border-primary ring-1 ring-primary"
                           : ""
                       }`}
+                      onClick={() => setSelectedCandidate(candidate._id)}
                     >
                       <RadioGroupItem
                         value={candidate._id}
                         id={candidate._id}
+                        checked={selectedCandidate === candidate._id}
+                        onClick={e => e.stopPropagation()}
                         className="absolute right-4 top-4"
                       />
                       <div className="space-y-3">
@@ -157,7 +166,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                             alt={candidate.name}
                             className="h-8 w-8 rounded-full"
                           />
-                          <h3 className="font-medium">{candidate.name}</h3>
+                          <h3 className="font-medium">{candidate.name} {candidate._id}</h3>
                         </div>
                         <p className="text-sm italic text-muted-foreground">
                           "{candidate.slogan}"
@@ -210,9 +219,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                 <Button
                   className="w-full"
                   disabled={!selectedCandidate}
-                  onClick={() => {
-                    setShowConfirmDialog(true);
-                  }}
+                  onClick={() => setShowFaceAuthDialog(true)}
                 >
                   Submit Vote
                 </Button>
@@ -276,8 +283,18 @@ const RightColumn = ({ election, isAdmin = false }) => {
         </TabsContent>
       </Tabs>
 
+      <FaceAuthDialog
+        open={showFaceAuthDialog}
+        onClose={() => setShowFaceAuthDialog(false)}
+        referenceImageUrl={referenceImageUrl}
+        onAuthenticated={() => {
+          setIsFaceAuthenticated(true);
+          setShowFaceAuthDialog(false);
+          setShowConfirmDialog(true);
+        }}
+      />
       <ConfirmDialog
-        showConfirmDialog={showConfirmDialog}
+        showConfirmDialog={showConfirmDialog && isFaceAuthenticated}
         setShowConfirmDialog={setShowConfirmDialog}
         selectedCandidate={selectedCandidate}
         election={election}
