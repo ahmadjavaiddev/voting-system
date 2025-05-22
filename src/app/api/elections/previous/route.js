@@ -13,25 +13,25 @@ export async function GET() {
     const now = new Date();
     const elections = await Election.find({
       endTime: { $lt: now },
-    });
+    }).populate("candidates");
 
-    const electionsWithVotes = await Promise.all(
-      elections.map(async (election) => {
-        const votes = await Vote.aggregate([
-          { $match: { electionId: election._id } },
-          { $group: { _id: "$party", count: { $sum: 1 } } },
-        ]);
-        return {
-          ...election.toObject(),
-          votes: votes.map((vote) => ({
-            party: vote._id,
-            count: vote.count,
-          })),
-        };
-      })
-    );
+    // const electionsWithVotes = await Promise.all(
+    //   elections.map(async (election) => {
+    //     const votes = await Vote.aggregate([
+    //       { $match: { electionId: election._id } },
+    //       { $group: { _id: "$candidate", count: { $sum: 1 } } },
+    //     ]);
+    //     return {
+    //       ...election.toObject(),
+    //       votes: votes.map((vote) => ({
+    //         candidate: vote._id,
+    //         count: vote.count,
+    //       })),
+    //     };
+    //   })
+    // );
 
-    return NextResponse.json({ elections: electionsWithVotes.reverse() });
+    return NextResponse.json({ elections: elections.reverse() });
   } catch (error) {
     console.log("Error While fetching the Elections ::", error.message);
     return NextResponse.json(
