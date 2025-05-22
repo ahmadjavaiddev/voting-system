@@ -37,6 +37,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
   const [activeTab, setActiveTab] = useState("details");
   const [showFaceAuthDialog, setShowFaceAuthDialog] = useState(false);
   const [isFaceAuthenticated, setIsFaceAuthenticated] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
 
   useEffect(() => {
     setHasVoted(election.userHasVoted);
@@ -51,11 +52,12 @@ const RightColumn = ({ election, isAdmin = false }) => {
   // Handle vote submission
   const handleVoteSubmit = async () => {
     try {
-      if (!selectedCandidate) return;
+      if (!selectedCandidate || !capturedImage) return;
       setIsVoting(true);
       const response = await axios.post("/api/vote", {
         electionId: election._id,
         candidateId: selectedCandidate,
+        userImage: capturedImage,
       });
 
       if (response.data.success) {
@@ -63,6 +65,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
         setShowConfirmDialog(false);
         setHasVoted(true);
         setShowSuccessDialog(true);
+        setCapturedImage(null);
       }
     } catch (error) {
       console.log("Error While vote submiting ::", error.message);
@@ -286,8 +289,8 @@ const RightColumn = ({ election, isAdmin = false }) => {
       <FaceAuthDialog
         open={showFaceAuthDialog}
         onClose={() => setShowFaceAuthDialog(false)}
-        referenceImageUrl={referenceImageUrl}
-        onAuthenticated={() => {
+        onCapture={(imageData) => {
+          setCapturedImage(imageData);
           setIsFaceAuthenticated(true);
           setShowFaceAuthDialog(false);
           setShowConfirmDialog(true);

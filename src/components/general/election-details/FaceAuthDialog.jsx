@@ -1,30 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
-import * as faceapi from "face-api.js";
 import { Button } from "@/components/ui/button";
 
-const MODEL_URL = "/models"; // Place face-api.js models in public/models
-
-const FaceAuthDialog = ({ open, onClose, referenceImageUrl, onAuthenticated }) => {
+const FaceAuthDialog = ({ open, onClose, onCapture }) => {
   const videoRef = useRef();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (open) {
       startVideo();
-      loadModels();
     }
     return () => stopVideo();
-    // eslint-disable-next-line
   }, [open]);
-
-  const loadModels = async () => {
-    setLoading(true);
-    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-    setLoading(false);
-  };
 
   const startVideo = () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -40,46 +27,22 @@ const FaceAuthDialog = ({ open, onClose, referenceImageUrl, onAuthenticated }) =
     }
   };
 
-  const handleAuthenticate = async () => {
+  const handleCapture = async () => {
     setError("");
+    setLoading(true);
     try {
-      // Get reference descriptor
-      const referenceImg = await faceapi.fetchImage(referenceImageUrl);
-      const referenceDetection = await faceapi
-        .detectSingleFace(referenceImg, new faceapi.TinyFaceDetectorOptions())
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!referenceDetection) {
-        setError("No face detected in reference image.");
-        return;
-      }
-
-      // Get live descriptor
-      const liveDetection = await faceapi
-        .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!liveDetection) {
-        setError("No face detected in webcam.");
-        return;
-      }
-
-      // Compare
-      const distance = faceapi.euclideanDistance(
-        referenceDetection.descriptor,
-        liveDetection.descriptor
-      );
-      if (distance < 0.5) {
-        onAuthenticated();
-        onClose();
-      } else {
-        setError("Face does not match. Please try again.");
-      }
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL("image/jpeg");
+      onCapture(imageData);
+      onClose();
     } catch (err) {
-      setError("Error during authentication. Please try again.");
+      setError("Error capturing image. Please try again.");
     }
+    setLoading(false);
   };
 
   if (!open) return null;
@@ -88,17 +51,11 @@ const FaceAuthDialog = ({ open, onClose, referenceImageUrl, onAuthenticated }) =
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
         <h2 className="text-lg font-semibold mb-4">Face Authentication</h2>
-        {loading ? (
-          <div>Loading models...</div>
-        ) : (
-          <>
-            <video ref={videoRef} autoPlay width="320" height="240" className="rounded border mb-2" />
-            {error && <div className="text-red-500 mb-2">{error}</div>}
-          </>
-        )}
+        <video ref={videoRef} autoPlay width="320" height="240" className="rounded border mb-2" />
+        {error && <div className="text-red-500 mb-2">{error}</div>}
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleAuthenticate} disabled={loading}>Authenticate</Button>
+          <Button onClick={handleCapture} disabled={loading}>Capture & Continue</Button>
         </div>
       </div>
     </div>
