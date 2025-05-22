@@ -4,10 +4,11 @@ import { CalendarClock, Clock, History } from "lucide-react";
 import LiveElectionsTab from "@/components/general/LiveElections/LiveElectionsTab";
 import UpcomingElectionsTab from "@/components/general/UpcomingElections/UpcomingElectionsTab";
 import PreviousElectionsTab from "@/components/general/PreviousElections/PreviousElectionsTab";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const validTabs = ["live", "upcoming", "previous"];
@@ -21,9 +22,19 @@ export default function AdminDashboard() {
     }
   }, [tabParam]);
 
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', activeTab);
+    router.replace(url.toString(), { scroll: false });
+  }, [activeTab, router]);
+
   return (
     <main className="container mx-auto p-4 md:p-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="live" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
