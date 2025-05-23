@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import ElectionsList from "@/components/general/results/ElectionsList";
 import SelectedElectionComponent from "@/components/general/results/SelectedElection";
 import BackButton from "@/components/custom/BackButton";
+import { useSearchParams } from "next/navigation";
 
 const ResultsPage = () => {
+  const searchParams = useSearchParams();
+  const electionId = searchParams.get("id");
   const [liveElections, setLiveElections] = useState([]);
   const [selectedElection, setSelectedElection] = useState({});
   const [totalCastVotes, setTotalCastVotes] = useState(0);
@@ -22,6 +25,15 @@ const ResultsPage = () => {
     if (total === 0) return 0;
     return ((part / total) * 100).toFixed(2);
   };
+
+  useEffect(() => {
+    if (electionId && liveElections.length > 0) {
+      const election = liveElections.find(
+        (election) => election._id === electionId
+      );
+      setSelectedElection(election);
+    }
+  }, [liveElections.length, electionId]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-7xl">

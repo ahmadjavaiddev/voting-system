@@ -74,7 +74,9 @@ const PreviousElectionCard = ({ election, isAdmin }) => {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/${isAdmin ? "admin" : "user"}/election/${election._id}`}
+          href={`/${isAdmin ? "admin" : "user"}/election/results?id=${
+            election._id
+          }`}
           className="w-full"
         >
           <Button
