@@ -32,7 +32,7 @@ function AdminDashboardContent() {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    url.searchParams.set('tab', activeTab);
+    url.searchParams.set("tab", activeTab);
     router.replace(url.toString(), { scroll: false });
   }, [activeTab, router]);
 
