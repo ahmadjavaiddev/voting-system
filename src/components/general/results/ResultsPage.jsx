@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import ElectionsList from "@/components/general/results/ElectionsList";
 import SelectedElectionComponent from "@/components/general/results/SelectedElection";
 import BackButton from "@/components/custom/BackButton";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ResultsPage = ({ elections }) => {
+  // Hooks
+  const router = useRouter();
   const searchParams = useSearchParams();
   const electionId = searchParams.get("id");
+  // States
   const [liveElections, setLiveElections] = useState([]);
   const [selectedElection, setSelectedElection] = useState({});
   const [totalCastVotes, setTotalCastVotes] = useState(0);
@@ -18,14 +21,6 @@ const ResultsPage = ({ elections }) => {
       setLiveElections(JSON.parse(elections));
     }
   }, [elections]);
-
-  useEffect(() => {
-    const votes = selectedElection?.candidates?.reduce(
-      (acc, candidate) => acc + candidate.votes,
-      0
-    );
-    setTotalCastVotes(votes);
-  }, [selectedElection]);
 
   const calculatePercentage = (part, total) => {
     if (total === 0) return 0;
@@ -37,9 +32,24 @@ const ResultsPage = ({ elections }) => {
       const election = liveElections.find(
         (election) => election._id === electionId
       );
-      setSelectedElection(election);
+      if (election) {
+        setSelectedElection(election);
+        const votes = election?.candidates?.reduce(
+          (acc, candidate) => acc + candidate.votes,
+          0
+        );
+        setTotalCastVotes(votes);
+      }
     }
   }, [liveElections.length, electionId]);
+
+  useEffect(() => {
+    if (selectedElection?._id) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("id", selectedElection?._id);
+      router.replace(url.toString(), { scroll: false });
+    }
+  }, [selectedElection?._id]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-7xl">
