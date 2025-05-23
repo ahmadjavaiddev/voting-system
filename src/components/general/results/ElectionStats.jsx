@@ -30,12 +30,12 @@ const ElectionStats = ({
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Last Updated</div>
         <div className="text-sm font-medium">
-          {selectedElection.lastUpdated
-            ? moment(selectedElection.lastUpdated).format("LT")
+          {selectedElection.updatedAt
+            ? moment(selectedElection.updatedAt).format("LT")
             : "-"}
           <div className="text-xs text-muted-foreground">
-            {selectedElection.lastUpdated
-              ? moment(selectedElection.lastUpdated).format("LL")
+            {selectedElection.updatedAt
+              ? moment(selectedElection.updatedAt).format("LL")
               : "-"}
           </div>
         </div>

@@ -34,9 +34,9 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
                 <div>
                   <span
                     className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white ${
-                      candidate.color.includes("bg-")
-                        ? candidate.color
-                        : `bg-[${candidate.color}]`
+                      candidate?.color?.includes("bg-")
+                        ? candidate?.color
+                        : `bg-[${candidate?.color}]`
                     }`}
                   >
                     {candidate.slogan}
@@ -53,9 +53,9 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
                     )}%`,
                   }}
                   className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                    candidate.color.includes("bg-")
-                      ? candidate.color
-                      : `bg-[${candidate.color}]`
+                    candidate?.color?.includes("bg-")
+                      ? candidate?.color
+                      : `bg-[${candidate?.color}]`
                   }`}
                 >
                   {calculatePercentage(
