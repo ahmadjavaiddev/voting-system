@@ -14,6 +14,10 @@ import Link from "next/link";
 import React from "react";
 
 const PreviousElectionCard = ({ election, isAdmin }) => {
+  const winner = election.candidates.reduce((max, candidate) => {
+    return candidate.votes > max.votes ? candidate : max;
+  }, election.candidates[0]);
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">
@@ -35,7 +39,7 @@ const PreviousElectionCard = ({ election, isAdmin }) => {
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Winner:</span>
             <span className="bg-green-100 rounded px-2 flex items-center">
-              {election.candidates.map((party) => party.winner && party.name)}
+              {winner.name}
               <CheckCircle2 className="ml-1 h-4 w-4" />
             </span>
           </div>
