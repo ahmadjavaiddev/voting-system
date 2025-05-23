@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
+import Candidate from "@/models/Candidate";
 
 export async function GET() {
   try {

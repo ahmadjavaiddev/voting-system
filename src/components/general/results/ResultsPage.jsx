@@ -5,6 +5,7 @@ import ElectionsList from "@/components/general/results/ElectionsList";
 import SelectedElectionComponent from "@/components/general/results/SelectedElection";
 import BackButton from "@/components/custom/BackButton";
 import { useSearchParams } from "next/navigation";
+import ElectionResultsSkeleton from "@/components/general/loadings/ElectionResultsSkeleton";
 
 const ResultsPage = () => {
   const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ const ResultsPage = () => {
   const [liveElections, setLiveElections] = useState([]);
   const [selectedElection, setSelectedElection] = useState({});
   const [totalCastVotes, setTotalCastVotes] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const votes = selectedElection?.candidates?.reduce(
@@ -35,6 +37,10 @@ const ResultsPage = () => {
     }
   }, [liveElections.length, electionId]);
 
+  if (isLoading) {
+    return <ElectionResultsSkeleton />;
+  }
+
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-7xl">
       <BackButton />
@@ -54,6 +60,7 @@ const ResultsPage = () => {
           liveElections={liveElections}
           setLiveElections={setLiveElections}
           calculatePercentage={calculatePercentage}
+          setIsLoading={setIsLoading}
         />
         {selectedElection?.candidates?.length >= 2 && (
           <SelectedElectionComponent

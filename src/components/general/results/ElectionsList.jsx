@@ -18,6 +18,7 @@ const ElectionsList = ({
   liveElections,
   setLiveElections,
   calculatePercentage,
+  setIsLoading,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -28,8 +29,11 @@ const ElectionsList = ({
 
   useEffect(() => {
     const getLiveElections = async () => {
+      setIsLoading(true);
       const response = await axios("/api/elections/results");
       setLiveElections(response.data.elections);
+      console.log("Loading elections");
+      setIsLoading(false);
     };
 
     getLiveElections();
