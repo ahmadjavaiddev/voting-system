@@ -21,10 +21,11 @@ const ElectionStats = ({
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Time Remaining</div>
-        <div className="text-xl font-semibold">
+        <div className="text-lg font-semibold">
           {moment().isAfter(moment(selectedElection.endTime))
             ? `Ended ${moment(selectedElection.endTime).fromNow()}`
-            : `${moment(selectedElection.endTime).toNow(true)}`}
+            : moment(selectedElection.endTime).diff(moment(), 'hours') + 'h ' + 
+              (moment(selectedElection.endTime).diff(moment(), 'minutes') % 60) + 'm'}
         </div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
