@@ -5,10 +5,12 @@ import Vote from "@/models/Vote";
 import mongoose from "mongoose";
 import { getToken } from "next-auth/jwt";
 
+const secret = process.env.AUTH_SECRET;
+
 export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
-    const token = await getToken({ req: request });
+    const token = await getToken({ req: request, secret });
     if (!token) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }

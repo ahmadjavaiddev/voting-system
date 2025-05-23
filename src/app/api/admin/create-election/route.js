@@ -4,9 +4,11 @@ import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
 import { getToken } from "next-auth/jwt";
 
+const secret = process.env.AUTH_SECRET;
+
 export async function POST(req) {
   try {
-    const token = await getToken({ req });
+    const token = await getToken({ req, secret });
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
