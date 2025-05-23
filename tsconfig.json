@@ -41,6 +41,6 @@
     "src/app/api/auth/login/route.js",
     "src/app/api/auth/register/route.js",
     "src/app/api/elections/history/route.js"
-  ],
+, "src/app/(auth)/login/page.jsx"  ],
   "exclude": ["node_modules"]
 }

@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
-import { validateJWTToken } from "@/lib/index";
 import Vote from "@/models/Vote";
 import mongoose from "mongoose";
+import { getToken } from "next-auth/jwt";
 
 export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
-
-    const payload = await validateJWTToken(request);
-    if (!payload) {
+    const token = await getToken({ req: request });
+    if (!token) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
     await dbConnect();
     const response = await Election.aggregate([
       {
@@ -59,7 +57,7 @@ export async function GET(request, { params }) {
     }
 
     const already = await Vote.findOne({
-      userId: payload.userId,
+      userId: token.id,
       electionId: election._id,
     });
     const result = {

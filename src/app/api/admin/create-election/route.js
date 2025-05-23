@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
-import { validateJWTToken } from "@/lib/index";
 import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req) {
   try {
-    const payload = await validateJWTToken(req);
-    if (!payload) {
+    const token = await getToken({ req });
+    if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -214,35 +214,6 @@ export const electionData = {
   userHasVoted: false,
 };
 
-export const JWT_SECRET = process.env.JWT_SECRET || "secret";
-
-export async function verifyJWT(token) {
-  const secret = new TextEncoder().encode(JWT_SECRET);
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload;
-  } catch {
-    return null;
-  }
-}
-
-export function getToken(req) {
-  const auth = req.headers.get("cookie");
-  if (!auth) return null;
-  return auth.replace("token=", "");
-}
-
-export async function validateJWTToken(request) {
-  const token = getToken(request);
-  const secret = new TextEncoder().encode(JWT_SECRET);
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload;
-  } catch {
-    return null;
-  }
-}
-
 export function getTimeEnded(time) {
   if (time) {
     const endTime = new Date(time)?.getTime();

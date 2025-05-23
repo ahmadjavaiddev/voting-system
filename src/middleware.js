@@ -1,43 +1,34 @@
-import { NextResponse } from "next/server";
-import { verifyJWT } from "./lib";
+// import { auth } from "@auth/core";
+// import { NextResponse } from "next/server";
 
-export async function middleware(request) {
-  try {
-    const { pathname } = request.nextUrl;
+// export default async function middleware(request) {
+//   const session = await auth(request);
+//   const { pathname } = request.nextUrl;
 
-    // Apply protection to all /user and /admin routes (including nested)
-    if (pathname.startsWith("/user") || pathname.startsWith("/admin")) {
-      // Get JWT from cookies
-      const token = request.cookies?.get("token")?.value;
-      if (!token) {
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
+//   if ((pathname.startsWith("/user") || pathname.startsWith("/admin")) && !session?.user) {
+//     return NextResponse.redirect(new URL("/login", request.url));
+//   }
 
-      const payload = await verifyJWT(token);
-      if (!payload) {
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
+//   // Role-based redirects
+//   if (pathname.startsWith("/user") && session?.user?.role !== "user") {
+//     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+//   }
+//   if (pathname.startsWith("/admin") && session?.user?.role !== "admin") {
+//     return NextResponse.redirect(new URL("/user/dashboard", request.url));
+//   }
 
-      // Protect /user routes
-      if (pathname.startsWith("/user") && payload.role !== "user") {
-        return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-      }
+//   return NextResponse.next();
+// }
 
-      // Protect /admin routes
-      if (pathname.startsWith("/admin") && payload.role !== "admin") {
-        return NextResponse.redirect(new URL("/user/dashboard", request.url));
-      }
+// export const config = {
+//   matcher: ["/user/:path*", "/admin/:path*"],
+// };
 
-      return NextResponse.next();
-    } else {
-      return NextResponse.next();
-    }
-  } catch (error) {
-    console.log("Error In Middleware ::", error.message);
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-}
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
+
+export default NextAuth(authConfig).auth;
 
 export const config = {
-  matcher: ["/user/:path*", "/admin/:path*"],
+  matcher: ["/user/:path*", "/admin/:path*", "/api/:path*"],
 };

@@ -2,16 +2,10 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Vote from "@/models/Vote";
 import Election from "@/models/Election";
-import { verifyJWT } from "@/lib/index";
 import Candidate from "@/models/Candidate";
 import User from "@/models/User";
 import * as faceapi from "face-api.js";
-
-function getToken(req) {
-  const auth = req.headers.get("cookie");
-  if (!auth) return null;
-  return auth.replace("token=", "");
-}
+import { getToken } from "next-auth/jwt";
 
 function compareDescriptors(descriptor1, descriptor2) {
   return faceapi.euclideanDistance(descriptor1, descriptor2) < 0.5;
@@ -40,17 +34,12 @@ export async function POST(req) {
       );
     }
 
-    const token = getToken(req);
+    const token = await getToken({ req });
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    let payload = await verifyJWT(token);
-    if (!payload) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = payload.userId;
+    const userId = token.id;
     if (!userId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
