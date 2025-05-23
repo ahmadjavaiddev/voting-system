@@ -1,11 +1,12 @@
 "use client";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { useActionState } from "react";
 import { authenticate } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
 import { ArrowRightIcon } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "";
   const [errorMessage, formAction, isPending] = useActionState(
@@ -49,5 +50,13 @@ export default function LoginPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
