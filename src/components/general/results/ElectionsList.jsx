@@ -36,19 +36,28 @@ const ElectionsList = ({
             <Card
               key={election._id}
               className={`cursor-pointer hover:border-primary transition-colors ${
-                selectedElection?._id === election._id ? "border-primary" : ""
+                selectedElection?._id === election._id ? "border-gray-600" : ""
               }`}
               onClick={() => handleElectionSelect(election)}
             >
               <CardHeader className="px-4">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-base">{election.title}</CardTitle>
-                  <Badge
-                    variant="default"
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    Live
-                  </Badge>
+                  {moment().isAfter(moment(election.endTime)) ? (
+                    <Badge
+                      variant="default"
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      Ended
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="default"
+                      className="bg-green-500 hover:bg-green-600"
+                    >
+                      Live
+                    </Badge>
+                  )}
                 </div>
                 <CardDescription className="line-clamp-1">
                   {election.description}
