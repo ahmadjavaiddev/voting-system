@@ -19,7 +19,7 @@ const SelectedElection = ({
   return (
     <div className="lg:col-span-2 space-y-6">
       {selectedElection && (
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6 sticky top-16">
           {(() => {
             const now = moment();
             const end = moment(selectedElection.endTime);
