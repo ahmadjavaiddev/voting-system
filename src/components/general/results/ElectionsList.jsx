@@ -23,8 +23,6 @@ const ElectionsList = ({
 
   return (
     <div className="lg:col-span-1 space-y-4">
-      <h2 className="text-lg font-semibold mb-2">Live Elections</h2>
-
       {liveElections.length > 0 &&
         liveElections.map((election) => {
           // Calculate total votes for this election
