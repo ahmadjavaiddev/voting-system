@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ChevronRight } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
@@ -54,12 +55,22 @@ const LiveElectionCard = ({ election, isAdmin }) => {
         </div>
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="flex gap-2">
         <Link
           href={`/${isAdmin ? "admin" : "user"}/election/${election._id}`}
           className="w-full"
         >
           <Button className="w-full">Cast Your Vote</Button>
+        </Link>
+        <Link
+          href={`/${isAdmin ? "admin" : "user"}/election/results?id=${
+            election._id
+          }`}
+          className="w-full"
+        >
+          <Button className="w-full" variant="outline">
+            View Results <ChevronRight className="ml-1 h-4 w-4" />
+          </Button>
         </Link>
       </CardFooter>
     </Card>
