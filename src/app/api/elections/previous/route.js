@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
-import Vote from "@/models/Vote";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
+import Candidate from "@/models/Candidate"; // Add this import
 
 export async function GET() {
   try {
@@ -13,27 +9,13 @@ export async function GET() {
     const now = new Date();
     const elections = await Election.find({
       endTime: { $lt: now },
-    }).populate("candidates");
-
-    // const electionsWithVotes = await Promise.all(
-    //   elections.map(async (election) => {
-    //     const votes = await Vote.aggregate([
-    //       { $match: { electionId: election._id } },
-    //       { $group: { _id: "$candidate", count: { $sum: 1 } } },
-    //     ]);
-    //     return {
-    //       ...election.toObject(),
-    //       votes: votes.map((vote) => ({
-    //         candidate: vote._id,
-    //         count: vote.count,
-    //       })),
-    //     };
-    //   })
-    // );
+    })
+      .populate("candidates")
+      .exec();
 
     return NextResponse.json({ elections: elections.reverse() });
   } catch (error) {
-    console.log("Error While fetching the Elections ::", error.message);
+    console.log("/api/elections/previous ::", error.message);
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 405 }
