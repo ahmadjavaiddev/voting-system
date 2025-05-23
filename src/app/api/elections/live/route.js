@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
+import Candidate from "@/models/Candidate";
 
 export async function GET() {
   try {
@@ -9,9 +10,11 @@ export async function GET() {
     const elections = await Election.find({
       startTime: { $lte: now },
       endTime: { $gte: now },
-    });
+    })
+      .populate("candidates")
+      .exec();
 
-    return NextResponse.json({ elections });
+    return NextResponse.json({ elections: elections.reverse() });
   } catch (error) {
     console.log("Error While fetching the Elections ::", error.message);
     return NextResponse.json(
