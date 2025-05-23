@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import {
   Card,
   CardContent,
@@ -7,43 +7,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import axios from "axios";
-import { Badge, Clock } from "lucide-react";
+import { Badge } from "lucide-react";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const ElectionsList = ({
   selectedElection,
   setSelectedElection,
   liveElections,
-  setLiveElections,
   calculatePercentage,
-  setIsLoading,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-
   // Handle election selection
   const handleElectionSelect = (election) => {
     setSelectedElection(election);
   };
 
-  useEffect(() => {
-    const getLiveElections = async () => {
-      setIsLoading(true);
-      const response = await axios("/api/elections/results");
-      setLiveElections(response.data.elections);
-      console.log("Loading elections");
-      setIsLoading(false);
-    };
-
-    getLiveElections();
-  }, []);
-
   return (
     <div className="lg:col-span-1 space-y-4">
       <h2 className="text-lg font-semibold mb-2">Live Elections</h2>
 
-      {liveElections.length > 0 ? (
+      {liveElections.length > 0 &&
         liveElections.map((election) => {
           // Calculate total votes for this election
           const electionTotalVotes = election.candidates?.reduce(
@@ -105,18 +88,7 @@ const ElectionsList = ({
               </CardContent>
             </Card>
           );
-        })
-      ) : (
-        <div className="text-center p-8 bg-muted/30 rounded-lg">
-          <Clock className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-          <h3 className="text-lg font-medium">No live elections found</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {searchQuery
-              ? "Try a different search term"
-              : "Check back later for live elections"}
-          </p>
-        </div>
-      )}
+        })}
     </div>
   );
 };

@@ -6,13 +6,18 @@ import SelectedElectionComponent from "@/components/general/results/SelectedElec
 import BackButton from "@/components/custom/BackButton";
 import { useSearchParams } from "next/navigation";
 
-const ResultsPage = () => {
+const ResultsPage = ({ elections }) => {
   const searchParams = useSearchParams();
   const electionId = searchParams.get("id");
   const [liveElections, setLiveElections] = useState([]);
   const [selectedElection, setSelectedElection] = useState({});
   const [totalCastVotes, setTotalCastVotes] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (elections) {
+      setLiveElections(JSON.parse(elections));
+    }
+  }, [elections]);
 
   useEffect(() => {
     const votes = selectedElection?.candidates?.reduce(
@@ -55,7 +60,6 @@ const ResultsPage = () => {
           liveElections={liveElections}
           setLiveElections={setLiveElections}
           calculatePercentage={calculatePercentage}
-          setIsLoading={setIsLoading}
         />
         {selectedElection?.candidates?.length >= 2 && (
           <SelectedElectionComponent
