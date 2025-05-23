@@ -1,4 +1,3 @@
-// "use client";
 import {
   Card,
   CardContent,
@@ -7,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 import React from "react";
 
@@ -37,13 +36,11 @@ const ElectionsList = ({
             <Card
               key={election._id}
               className={`cursor-pointer hover:border-primary transition-colors ${
-                selectedElection?._id === election._id
-                  ? "border-primary ring-1 ring-primary"
-                  : ""
+                selectedElection?._id === election._id ? "border-primary" : ""
               }`}
               onClick={() => handleElectionSelect(election)}
             >
-              <CardHeader className="p-4">
+              <CardHeader className="px-4">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-base">{election.title}</CardTitle>
                   <Badge
@@ -57,7 +54,7 @@ const ElectionsList = ({
                   {election.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className="px-4 pt-0">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-muted-foreground">Votes:</span>
                   <span className="font-medium">
