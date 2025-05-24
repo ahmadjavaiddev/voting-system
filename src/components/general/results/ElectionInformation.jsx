@@ -1,8 +1,9 @@
+import { calculatePercentage } from "@/lib/index";
 import { Info } from "lucide-react";
 import moment from "moment";
 import React from "react";
 
-const ElectionInformation = ({ selectedElection, calculatePercentage }) => {
+const ElectionInformation = ({ selectedElection }) => {
   return (
     <div className="bg-muted/20 p-4 rounded-lg">
       <div className="flex items-center gap-2 mb-2">
@@ -34,11 +35,7 @@ const ElectionInformation = ({ selectedElection, calculatePercentage }) => {
           <p className="text-muted-foreground mb-1">Current Participation:</p>
           <p className="font-medium">
             {selectedElection.totalVotes} votes (
-            {calculatePercentage(
-              selectedElection.totalVotes,
-              selectedElection.eligibleVoters
-            )}
-            %)
+            {calculatePercentage(selectedElection)}%)
           </p>
         </div>
       </div>

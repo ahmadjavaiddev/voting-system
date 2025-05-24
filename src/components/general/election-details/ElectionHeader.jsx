@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getTotalCastVotes } from "@/lib/index";
+import { calculatePercentage, getTotalCastVotes } from "@/lib/index";
 import { Users, Vote } from "lucide-react";
 import moment from "moment";
 import React from "react";
@@ -14,14 +14,6 @@ const ElectionHeader = ({ election }) => {
   const now = moment();
   const start = moment(election.startTime);
   const end = moment(election.endTime);
-
-  function calculatePercentage(election) {
-    const value = getTotalCastVotes(election);
-    const total = election.eligibleVoters;
-
-    if (total === 0) return 0;
-    return Math.round((value / total) * 100);
-  }
 
   return (
     <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">

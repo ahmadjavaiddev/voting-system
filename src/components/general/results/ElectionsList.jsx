@@ -9,12 +9,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 import React from "react";
+import { calculatePercentage, getTotalCastVotes } from "@/lib/index";
 
 const ElectionsList = ({
   selectedElection,
   setSelectedElection,
   liveElections,
-  calculatePercentage,
 }) => {
   // Handle election selection
   const handleElectionSelect = (election) => {
@@ -26,10 +26,7 @@ const ElectionsList = ({
       {liveElections.length > 0 &&
         liveElections.map((election) => {
           // Calculate total votes for this election
-          const electionTotalVotes = election.candidates?.reduce(
-            (acc, candidate) => acc + (candidate.votes || 0),
-            0
-          );
+          const electionTotalVotes = getTotalCastVotes(election);
           return (
             <Card
               key={election._id}
@@ -69,19 +66,12 @@ const ElectionsList = ({
                   </span>
                 </div>
                 <Progress
-                  value={calculatePercentage(
-                    electionTotalVotes,
-                    election.eligibleVoters
-                  )}
+                  value={calculatePercentage(election)}
                   className="h-2"
                 />
                 <div className="flex justify-between text-xs mt-1">
                   <span className="text-muted-foreground">
-                    {calculatePercentage(
-                      electionTotalVotes,
-                      election.eligibleVoters
-                    )}
-                    % Turnout
+                    {calculatePercentage(election)}% Turnout
                   </span>
                   <span className="text-muted-foreground">
                     {moment().isAfter(moment(election.endTime))

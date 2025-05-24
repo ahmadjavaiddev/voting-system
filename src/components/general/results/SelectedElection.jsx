@@ -10,11 +10,7 @@ import ElectionStats from "./ElectionStats";
 import ResultsVisualization from "./ResultsVisualization";
 import ElectionInformation from "./ElectionInformation";
 
-const SelectedElection = ({
-  selectedElection,
-  totalCastVotes,
-  calculatePercentage,
-}) => {
+const SelectedElection = ({ selectedElection }) => {
   return (
     <div className="lg:col-span-2 space-y-6">
       {selectedElection && (
@@ -33,21 +29,9 @@ const SelectedElection = ({
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <ElectionStats
-                totalCastVotes={totalCastVotes}
-                selectedElection={selectedElection}
-                calculatePercentage={calculatePercentage}
-              />
-              <ResultsVisualization
-                selectedElection={selectedElection}
-                totalCastVotes={totalCastVotes}
-                calculatePercentage={calculatePercentage}
-              />
-              <ElectionInformation
-                selectedElection={selectedElection}
-                totalCastVotes={totalCastVotes}
-                calculatePercentage={calculatePercentage}
-              />
+              <ElectionStats selectedElection={selectedElection} />
+              <ResultsVisualization selectedElection={selectedElection} />
+              <ElectionInformation selectedElection={selectedElection} />
             </CardContent>
           </Card>
         </div>

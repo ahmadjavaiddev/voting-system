@@ -14,18 +14,12 @@ const ResultsPage = ({ elections }) => {
   // States
   const [liveElections, setLiveElections] = useState([]);
   const [selectedElection, setSelectedElection] = useState({});
-  const [totalCastVotes, setTotalCastVotes] = useState(0);
 
   useEffect(() => {
     if (elections) {
       setLiveElections(JSON.parse(elections));
     }
   }, [elections]);
-
-  const calculatePercentage = (part, total) => {
-    if (total === 0) return 0;
-    return ((part / total) * 100).toFixed(2);
-  };
 
   useEffect(() => {
     if (electionId && liveElections.length > 0) {
@@ -34,11 +28,6 @@ const ResultsPage = ({ elections }) => {
       );
       if (election) {
         setSelectedElection(election);
-        const votes = election?.candidates?.reduce(
-          (acc, candidate) => acc + candidate.votes,
-          0
-        );
-        setTotalCastVotes(votes);
       }
     }
   }, [liveElections.length, electionId]);
@@ -64,20 +53,12 @@ const ResultsPage = ({ elections }) => {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <ElectionsList
-          totalCastVotes={totalCastVotes}
           selectedElection={selectedElection}
           setSelectedElection={setSelectedElection}
           liveElections={liveElections}
-          setLiveElections={setLiveElections}
-          calculatePercentage={calculatePercentage}
         />
         {selectedElection?.candidates?.length >= 2 && (
-          <SelectedElectionComponent
-            totalCastVotes={totalCastVotes}
-            selectedElection={selectedElection}
-            setSelectedElection={setSelectedElection}
-            calculatePercentage={calculatePercentage}
-          />
+          <SelectedElectionComponent selectedElection={selectedElection} />
         )}
       </div>
     </div>

@@ -59,7 +59,10 @@ export function getTimeLeft(endDateString) {
   }
 }
 
-export function calculatePercentage(value, total) {
+export function calculatePercentage(election) {
+  const value = getTotalCastVotes(election);
+  const total = election.eligibleVoters;
+
   if (total === 0) return 0;
   return Math.round((value / total) * 100);
 }

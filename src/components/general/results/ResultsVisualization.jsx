@@ -1,6 +1,7 @@
+import { calculatePercentage } from "@/lib/index";
 import React from "react";
 
-const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
+const ResultsVisualization = ({ selectedElection }) => {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4">Current Results</h3>
@@ -18,11 +19,7 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold">
-                  {calculatePercentage(
-                    candidate.votes,
-                    selectedElection.eligibleVoters || 1500
-                  )}
-                  %
+                  {calculatePercentage(selectedElection)}%
                 </span>
                 <span className="text-sm text-muted-foreground">
                   ({candidate.votes} votes)
@@ -47,10 +44,7 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
               <div className="overflow-hidden h-6 text-xs flex rounded-full bg-muted/30">
                 <div
                   style={{
-                    width: `${calculatePercentage(
-                      candidate.votes,
-                      selectedElection.eligibleVoters
-                    )}%`,
+                    width: `${calculatePercentage(selectedElection)}%`,
                   }}
                   className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
                     candidate?.color?.includes("bg-")
@@ -58,16 +52,9 @@ const ResultsVisualization = ({ selectedElection, calculatePercentage }) => {
                       : `bg-[${candidate?.color}]`
                   }`}
                 >
-                  {calculatePercentage(
-                    candidate.votes,
-                    selectedElection.eligibleVoters
-                  ) > 10 && (
+                  {calculatePercentage(selectedElection) > 10 && (
                     <span className="px-2 font-semibold">
-                      {calculatePercentage(
-                        candidate.votes,
-                        selectedElection.eligibleVoters
-                      )}
-                      %
+                      {calculatePercentage(selectedElection)}%
                     </span>
                   )}
                 </div>

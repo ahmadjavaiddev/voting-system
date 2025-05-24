@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { calculatePercentage } from "@/lib/index";
+import { calculatePercentage, getTimeEnded } from "@/lib/index";
 import { Progress } from "@/components/ui/progress";
 import {
   AlertCircle,
@@ -25,7 +25,6 @@ import React, { useEffect, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
-import { getTimeEnded } from "@/lib/index";
 import FaceAuthDialog from "./FaceAuthDialog";
 
 const RightColumn = ({ election, isAdmin = false }) => {
@@ -84,12 +83,6 @@ const RightColumn = ({ election, isAdmin = false }) => {
       }
     }
   };
-
-  // Calculate total votes
-  const totalVotes = election.candidates?.reduce(
-    (sum, candidate) => sum + candidate.votes,
-    0
-  );
 
   return (
     <div className="md:col-span-2">
@@ -262,11 +255,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
               </CardTitle>
               <CardDescription>
                 Live results based on {election.totalVotes} votes (
-                {calculatePercentage(
-                  election.totalVotes,
-                  election.eligibleVoters
-                )}
-                % turnout)
+                {calculatePercentage(election)}% turnout)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -281,7 +270,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">
-                        {calculatePercentage(candidate.votes, totalVotes)}%
+                        {calculatePercentage(election)}%
                       </span>
                       <span className="text-xs text-muted-foreground">
                         ({candidate.votes} votes)
@@ -289,7 +278,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
                     </div>
                   </div>
                   <Progress
-                    value={calculatePercentage(candidate.votes, totalVotes)}
+                    value={calculatePercentage(election)}
                     className={`h-2 ${candidate.color}`}
                   />
                 </div>

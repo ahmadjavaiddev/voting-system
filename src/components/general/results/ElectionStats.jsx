@@ -1,22 +1,20 @@
+import { calculatePercentage, getTotalCastVotes } from "@/lib/index";
 import moment from "moment";
 import React from "react";
 
-const ElectionStats = ({
-  selectedElection,
-  totalCastVotes,
-  calculatePercentage,
-}) => {
+const ElectionStats = ({ selectedElection }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Total Votes</div>
-        <div className="text-xl font-semibold">{totalCastVotes}</div>
+        <div className="text-xl font-semibold">
+          {getTotalCastVotes(selectedElection)}
+        </div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
         <div className="text-muted-foreground text-xs mb-1">Turnout</div>
         <div className="text-xl font-semibold">
-          {calculatePercentage(totalCastVotes, selectedElection.eligibleVoters)}
-          %
+          {calculatePercentage(selectedElection)}%
         </div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
@@ -24,8 +22,11 @@ const ElectionStats = ({
         <div className="text-lg font-semibold">
           {moment().isAfter(moment(selectedElection.endTime))
             ? `Ended ${moment(selectedElection.endTime).fromNow()}`
-            : moment(selectedElection.endTime).diff(moment(), 'hours') + 'h ' + 
-              (moment(selectedElection.endTime).diff(moment(), 'minutes') % 60) + 'm'}
+            : moment(selectedElection.endTime).diff(moment(), "hours") +
+              "h " +
+              (moment(selectedElection.endTime).diff(moment(), "minutes") %
+                60) +
+              "m"}
         </div>
       </div>
       <div className="bg-muted/30 p-3 rounded-lg">
