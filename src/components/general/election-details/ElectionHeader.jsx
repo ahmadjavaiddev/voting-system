@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { calculatePercentage } from "@/lib/index";
+import { getTotalCastVotes } from "@/lib/index";
 import { Users, Vote } from "lucide-react";
 import moment from "moment";
 import React from "react";
@@ -14,6 +14,14 @@ const ElectionHeader = ({ election }) => {
   const now = moment();
   const start = moment(election.startTime);
   const end = moment(election.endTime);
+
+  function calculatePercentage(election) {
+    const value = getTotalCastVotes(election);
+    const total = election.eligibleVoters;
+
+    if (total === 0) return 0;
+    return Math.round((value / total) * 100);
+  }
 
   return (
     <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -48,7 +56,7 @@ const ElectionHeader = ({ election }) => {
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
                 <Users className="h-3.5 w-3.5" />
-                <span>{election.totalVotes || 50}</span>
+                <span>{election.eligibleVoters}</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -62,19 +70,13 @@ const ElectionHeader = ({ election }) => {
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
                 <Vote className="h-3.5 w-3.5" />
-                <span>
-                  {calculatePercentage(
-                    election.totalVotes || 50,
-                    election.eligibleVoters || 101
-                  )}
-                  % Turnout
-                </span>
+                <span>{calculatePercentage(election)}% Turnout</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                {election.totalVotes || 50} out of{" "}
-                {election.eligibleVoters || 101} eligible voters
+                {getTotalCastVotes(election)} out of {election.eligibleVoters}{" "}
+                eligible voters
               </p>
             </TooltipContent>
           </Tooltip>
