@@ -108,9 +108,8 @@ const RightColumn = ({ election, isAdmin = false }) => {
         </Alert>
       )}
 
-
       {/* Details Area */}
-      <Card>
+      <Card className="mb-4">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-4 w-4" /> About This Election
