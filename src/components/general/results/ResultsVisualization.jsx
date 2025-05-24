@@ -1,7 +1,14 @@
-import { calculatePercentage } from "@/lib/index";
 import React from "react";
 
 const ResultsVisualization = ({ selectedElection }) => {
+  function calculatePercentage(candidate) {
+    const value = candidate.votes || 0;
+    const total = selectedElection.eligibleVoters;
+
+    if (total === 0) return 0;
+    return Math.round((value / total) * 100);
+  }
+
   return (
     <div>
       <h3 className="text-lg font-semibold mb-4">Current Results</h3>
@@ -19,10 +26,14 @@ const ResultsVisualization = ({ selectedElection }) => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold">
-                  {calculatePercentage(selectedElection)}%
+                  {calculatePercentage(candidate)}%
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  ({candidate.votes} votes)
+                  (
+                  {candidate.votes >= 2
+                    ? `${candidate.votes} votes`
+                    : `${candidate.votes} vote`}
+                  )
                 </span>
               </div>
             </div>
@@ -44,7 +55,7 @@ const ResultsVisualization = ({ selectedElection }) => {
               <div className="overflow-hidden h-6 text-xs flex rounded-full bg-muted/30">
                 <div
                   style={{
-                    width: `${calculatePercentage(selectedElection)}%`,
+                    width: `${calculatePercentage(candidate)}%`,
                   }}
                   className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
                     candidate?.color?.includes("bg-")
@@ -52,9 +63,9 @@ const ResultsVisualization = ({ selectedElection }) => {
                       : `bg-[${candidate?.color}]`
                   }`}
                 >
-                  {calculatePercentage(selectedElection) > 10 && (
+                  {calculatePercentage(candidate) > 10 && (
                     <span className="px-2 font-semibold">
-                      {calculatePercentage(selectedElection)}%
+                      {calculatePercentage(candidate)}%
                     </span>
                   )}
                 </div>
