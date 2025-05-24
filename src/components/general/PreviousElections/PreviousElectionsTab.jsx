@@ -3,7 +3,7 @@ import { History } from "lucide-react";
 import axios from "axios";
 import PreviousElectionCard from "./PreviousElectionCard";
 
-const PreviousElectionsTab = ({ isAdmin }) => {
+const PreviousElectionsTab = () => {
   const [previousElections, setPreviousElections] = useState([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const PreviousElectionsTab = ({ isAdmin }) => {
       {previousElections?.length > 0 ? (
         previousElections?.map((election) => (
           <div key={election._id} className="relative">
-            <PreviousElectionCard election={election} isAdmin={isAdmin} />
+            <PreviousElectionCard election={election} />
           </div>
         ))
       ) : (

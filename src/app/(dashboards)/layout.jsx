@@ -1,11 +1,11 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import AdminSidebar from "@/components/custom/admin/Sidebar";
-import AdminHeader from "@/components/custom/admin/Header";
+import Sidebar from "@/components/custom/Sidebar";
+import AdminHeader from "@/components/custom/Header";
 
 export default function AdminLayout({ children }) {
   return (
     <SidebarProvider>
-      <AdminSidebar />
+      <Sidebar />
       <div className="w-full">
         <AdminHeader />
         <div className="container mx-auto px-4">{children}</div>

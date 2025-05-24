@@ -13,7 +13,7 @@ import { CheckCircle2, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const PreviousElectionCard = ({ election, isAdmin }) => {
+const PreviousElectionCard = ({ election }) => {
   const winner = election.candidates.reduce((max, candidate) => {
     return candidate.votes > max.votes ? candidate : max;
   }, election.candidates[0]);
@@ -74,9 +74,7 @@ const PreviousElectionCard = ({ election, isAdmin }) => {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/${isAdmin ? "admin" : "user"}/election/results?id=${
-            election._id
-          }`}
+          href={`/dashboard/election/results?id=${election._id}`}
           className="w-full"
         >
           <Button

@@ -60,17 +60,17 @@ function AdminDashboardContent() {
 
         {/* Live Elections */}
         <TabsContent value="live" className="space-y-6">
-          <LiveElectionsTab isAdmin={true} />
+          <LiveElectionsTab />
         </TabsContent>
 
         {/* Upcoming Elections */}
         <TabsContent value="upcoming" className="space-y-6">
-          <UpcomingElectionsTab isAdmin={true} />
+          <UpcomingElectionsTab />
         </TabsContent>
 
         {/* Previous Elections */}
         <TabsContent value="previous" className="space-y-6">
-          <PreviousElectionsTab isAdmin={true} />
+          <PreviousElectionsTab />
         </TabsContent>
       </Tabs>
     </main>

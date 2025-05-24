@@ -1,8 +1,6 @@
 "use client";
 import ElectionHeader from "@/components/general/election-details/ElectionHeader";
-import { Button } from "@/components/ui/button";
 import LeftColumn from "@/components/general/election-details/LeftColumn";
-import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";

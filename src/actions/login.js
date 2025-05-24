@@ -22,21 +22,11 @@ export async function authenticate(prevState, formData) {
     // Get the callbackUrl if present
     const callbackUrl = credentials.redirectTo || credentials.callbackUrl;
 
-    // Fetch the session to get the user role
-    // const session = await auth();
-
     if (callbackUrl) {
       redirect(callbackUrl);
     } else {
       redirect("/dashboard");
     }
-    // if (callbackUrl) {
-    //   redirect(callbackUrl);
-    // } else if (session?.user?.role === "admin") {
-    //   redirect("/admin/dashboard");
-    // } else {
-    //   redirect("/user/dashboard");
-    // }
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

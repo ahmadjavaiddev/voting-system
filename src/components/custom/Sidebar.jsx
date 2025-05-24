@@ -18,9 +18,9 @@ import {
   PlusCircle,
   ListVideo,
 } from "lucide-react";
-import RoleGuard from "../RoleGaurd";
+import RoleGuard from "./RoleGaurd";
 
-const AdminSidebar = async () => {
+const SidebarComponent = async () => {
   return (
     <Sidebar>
       {/* Sidebar */}
@@ -34,7 +34,7 @@ const AdminSidebar = async () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive>
-              <Link href="/dashboard">
+              <Link href="/dashboard?tab=live">
                 <Trophy />
                 <span>Dashboard</span>
               </Link>
@@ -44,7 +44,7 @@ const AdminSidebar = async () => {
           <RoleGuard allowedRoles={["admin"]} redirect={false}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="/election/create">
+                <Link href="/dashboard/election/create">
                   <PlusCircle />
                   <span>Create Election</span>
                 </Link>
@@ -78,20 +78,20 @@ const AdminSidebar = async () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/election/results">
+              <Link href="/dashboard/election/results">
                 <BarChart2 />
                 <span>Results</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
+          {/* <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/settings">
                 <Settings />
                 <span>Settings</span>
               </Link>
             </SidebarMenuButton>
-          </SidebarMenuItem>
+          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t p-4">
@@ -109,4 +109,4 @@ const AdminSidebar = async () => {
   );
 };
 
-export default AdminSidebar;
+export default SidebarComponent;

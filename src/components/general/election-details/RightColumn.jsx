@@ -18,7 +18,7 @@ import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
 import FaceAuthDialog from "./FaceAuthDialog";
 
-const RightColumn = ({ election, isAdmin = false }) => {
+const RightColumn = ({ election }) => {
   const [selectedCandidate, setSelectedCandidate] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
@@ -121,7 +121,7 @@ const RightColumn = ({ election, isAdmin = false }) => {
       </Card>
 
       {/* Voting section: only show if not admin, not voted, and not ended */}
-      {!isAdmin && !hasVoted && !electionEnded && (
+      {!hasVoted && !electionEnded && (
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2">

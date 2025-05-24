@@ -3,7 +3,7 @@ import LiveElectionCard from "./LiveElectionCard";
 import { Clock } from "lucide-react";
 import axios from "axios";
 
-const LiveElectionsTab = ({ isAdmin }) => {
+const LiveElectionsTab = () => {
   const [liveElections, setLiveElections] = useState([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const LiveElectionsTab = ({ isAdmin }) => {
       {liveElections?.length > 0 ? (
         liveElections?.map((election) => (
           <div key={election._id} className="relative">
-            <LiveElectionCard election={election} isAdmin={isAdmin} />
+            <LiveElectionCard election={election} />
           </div>
         ))
       ) : (

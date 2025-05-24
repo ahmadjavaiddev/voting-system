@@ -14,7 +14,7 @@ import moment from "moment";
 import Link from "next/link";
 import React from "react";
 
-const LiveElectionCard = ({ election, isAdmin }) => {
+const LiveElectionCard = ({ election }) => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">
@@ -56,16 +56,11 @@ const LiveElectionCard = ({ election, isAdmin }) => {
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        <Link
-          href={`/${isAdmin ? "admin" : "user"}/election/${election._id}`}
-          className="w-full"
-        >
+        <Link href={`/dashboard/election/${election._id}`} className="w-full">
           <Button className="w-full">Cast Your Vote</Button>
         </Link>
         <Link
-          href={`/${isAdmin ? "admin" : "user"}/election/results?id=${
-            election._id
-          }`}
+          href={`/dashboard/election/results?id=${election._id}`}
           className="w-full"
         >
           <Button className="w-full" variant="outline">
