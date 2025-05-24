@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/app/api/vote/route.js",
-    "src/app/(dashboards)/admin/dashboard/page.jsx",
+    "src/app/(dashboards)/dashboard/page.jsx",
     "src/app/api/elections/live/route.js",
     "src/app/(dashboards)/user/dashboard/page.jsx",
     "src/middleware.js",

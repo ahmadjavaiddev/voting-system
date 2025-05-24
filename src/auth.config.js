@@ -22,44 +22,22 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const userRole = auth?.user?.role;
       const path = nextUrl.pathname;
 
-      // Define protected routes
-      const adminRoutes = [
-        "/admin",
-        "/admin/dashboard",
-        "/admin/election/create",
-        "/admin/election/results",
-      ];
-      const userRoutes = ["/user", "/user/dashboard", "/user/election/results"];
+      // Public routes
       const publicRoutes = ["/login", "/register"];
 
-      // Redirect logged-in users from public routes
+      // Redirect logged-in users from public routes to dashboard
       if (isLoggedIn && publicRoutes.includes(path)) {
-        return Response.redirect(
-          new URL(
-            userRole === "admin" ? "/admin/dashboard" : "/user/dashboard",
-            nextUrl
-          )
-        );
+        return Response.redirect(new URL("/dashboard", nextUrl));
       }
 
-      // Handle admin routes
-      if (adminRoutes.some((route) => path.startsWith(route))) {
-        if (!isLoggedIn) return false; // Automatically redirects to /login
-        if (userRole !== "admin") {
-          return Response.redirect(new URL("/user/dashboard", nextUrl));
+      // Protect dashboard route
+      if (path.startsWith("/dashboard")) {
+        if (!isLoggedIn) {
+          return Response.redirect(new URL("/login", nextUrl));
         }
-        return true;
-      }
-
-      // Handle user routes
-      if (userRoutes.some((route) => path.startsWith(route))) {
-        if (!isLoggedIn) return false;
-        if (userRole !== "user") {
-          return Response.redirect(new URL("/admin/dashboard", nextUrl));
-        }
+        // Allow access to dashboard for all roles
         return true;
       }
 

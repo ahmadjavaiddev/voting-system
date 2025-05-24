@@ -163,7 +163,7 @@ export default function CreateElectionForm() {
       // Send to backend
       await axios.post("/api/admin/create-election", data);
       setSubmitSuccess("Election created successfully!");
-      setTimeout(() => router.push("/admin/dashboard"), 1200);
+      setTimeout(() => router.push("/dashboard"), 1200);
     } catch (error) {
       setSubmitError(
         error?.response?.data?.error ||

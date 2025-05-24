@@ -1,29 +1,29 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Vote, User, Lock, BarChart2 } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Vote, User, Lock, BarChart2 } from "lucide-react";
 
 export default function Home() {
   const features = [
     {
       icon: <Vote className="w-6 h-6" />,
-      title: 'Secure Voting',
-      description: 'Cast your vote securely with our blockchain-based system.'
+      title: "Secure Voting",
+      description: "Cast your vote securely with our blockchain-based system.",
     },
     {
       icon: <User className="w-6 h-6" />,
-      title: 'User Friendly',
-      description: 'Simple and intuitive interface for all users.'
+      title: "User Friendly",
+      description: "Simple and intuitive interface for all users.",
     },
     {
       icon: <Lock className="w-6 h-6" />,
-      title: 'End-to-End Encryption',
-      description: 'Your vote remains confidential and secure.'
+      title: "End-to-End Encryption",
+      description: "Your vote remains confidential and secure.",
     },
     {
       icon: <BarChart2 className="w-6 h-6" />,
-      title: 'Real-time Results',
-      description: 'View live election results as they come in.'
-    }
+      title: "Real-time Results",
+      description: "View live election results as they come in.",
+    },
   ];
 
   return (
@@ -35,16 +35,17 @@ export default function Home() {
             <Vote className="w-4 h-4" />
             <span>Secure Online Voting Platform</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Modern, Secure & Transparent
             <span className="text-blue-600 block mt-2">Voting System</span>
           </h1>
-          
+
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Experience the future of democratic voting with our secure, transparent, and accessible online voting platform.
+            Experience the future of democratic voting with our secure,
+            transparent, and accessible online voting platform.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-20">
             <Link href="/register" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto">
@@ -61,7 +62,7 @@ export default function Home() {
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
               >
@@ -81,12 +82,12 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-10">Quick Access</h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/user/dashboard">
+            <Link href="/dashboard">
               <Button variant="outline" size="lg" className="gap-2">
                 <User className="w-4 h-4" /> User Dashboard
               </Button>
             </Link>
-            <Link href="/admin/dashboard">
+            <Link href="/dashboard">
               <Button variant="outline" size="lg" className="gap-2">
                 <Lock className="w-4 h-4" /> Admin Dashboard
               </Button>

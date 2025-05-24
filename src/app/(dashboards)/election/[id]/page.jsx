@@ -30,7 +30,7 @@ const ElectionDetails = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-6xl">
-      <BackButton url="/admin/dashboard" />
+      <BackButton url="/dashboard" />
       <ElectionHeader election={electionData} />
       <div className="grid gap-6 md:grid-cols-3">
         <LeftColumn election={electionData} />

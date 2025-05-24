@@ -18,38 +18,43 @@ import {
   PlusCircle,
   ListVideo,
 } from "lucide-react";
+import RoleGuard from "../RoleGaurd";
 
-const AdminSidebar = () => {
+const AdminSidebar = async () => {
   return (
     <Sidebar>
       {/* Sidebar */}
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-2 py-3">
           <Trophy className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">Admin Panel</span>
+          <span className="text-xl font-bold">Dashboard</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive>
-              <Link href="/admin/dashboard">
+              <Link href="/dashboard">
                 <Trophy />
                 <span>Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+
+          <RoleGuard allowedRoles={["admin"]} redirect={false}>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/election/create">
+                  <PlusCircle />
+                  <span>Create Election</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </RoleGuard>
+
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/admin/election/create">
-                <PlusCircle />
-                <span>Create Election</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/admin/dashboard?tab=live">
+              <Link href="/dashboard?tab=live">
                 <ListVideo />
                 <span>Live Elections</span>
               </Link>
@@ -57,7 +62,7 @@ const AdminSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/admin/dashboard?tab=upcoming">
+              <Link href="/dashboard?tab=upcoming">
                 <CalendarCheck2 />
                 <span>Upcoming Elections</span>
               </Link>
@@ -65,7 +70,7 @@ const AdminSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/admin/dashboard?tab=previous">
+              <Link href="/dashboard?tab=previous">
                 <History />
                 <span>Previous Elections</span>
               </Link>
@@ -73,7 +78,7 @@ const AdminSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/admin/election/results">
+              <Link href="/election/results">
                 <BarChart2 />
                 <span>Results</span>
               </Link>
@@ -81,7 +86,7 @@ const AdminSidebar = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/admin/settings">
+              <Link href="/settings">
                 <Settings />
                 <span>Settings</span>
               </Link>
