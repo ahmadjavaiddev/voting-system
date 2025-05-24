@@ -12,42 +12,57 @@ export const authConfig = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user = {
+          ...session.user,
+          id: token.id,
+          role: token.role,
+        };
       }
       return session;
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isAdmin = auth?.user?.role === "admin";
-      const isUser = auth?.user?.role === "user";
-      const isLoginPage = nextUrl.pathname === "/login";
-      const isAdminDashboard = nextUrl.pathname.startsWith("/admin");
-      const isUserDashboard = nextUrl.pathname.startsWith("/user");
-      console.log("Executing auth");
+      const userRole = auth?.user?.role;
+      const path = nextUrl.pathname;
 
-      // Redirect logged-in users away from login page to their dashboard
-      if (isLoginPage && isLoggedIn) {
-        if (isAdmin) {
-          return Response.redirect(new URL("/admin/dashboard", nextUrl));
-        }
-        if (isUser) {
+      // Define protected routes
+      const adminRoutes = [
+        "/admin",
+        "/admin/dashboard",
+        "/admin/election/create",
+        "/admin/election/results",
+      ];
+      const userRoutes = ["/user", "/user/dashboard", "/user/election/results"];
+      const publicRoutes = ["/login", "/register"];
+
+      // Redirect logged-in users from public routes
+      if (isLoggedIn && publicRoutes.includes(path)) {
+        return Response.redirect(
+          new URL(
+            userRole === "admin" ? "/admin/dashboard" : "/user/dashboard",
+            nextUrl
+          )
+        );
+      }
+
+      // Handle admin routes
+      if (adminRoutes.some((route) => path.startsWith(route))) {
+        if (!isLoggedIn) return false; // Automatically redirects to /login
+        if (userRole !== "admin") {
           return Response.redirect(new URL("/user/dashboard", nextUrl));
         }
+        return true;
       }
 
-      // Block access to /admin for non-admins
-      if (isAdminDashboard && (!isLoggedIn || !isAdmin)) {
-        console.log("Executing to login");
-        return Response.redirect(new URL("/login", nextUrl));
-      }
-      // Block access to /user for non-users
-      if (isUserDashboard && (!isLoggedIn || !isUser)) {
-        console.log("Executing to login user");
-        return Response.redirect(new URL("/login", nextUrl));
+      // Handle user routes
+      if (userRoutes.some((route) => path.startsWith(route))) {
+        if (!isLoggedIn) return false;
+        if (userRole !== "user") {
+          return Response.redirect(new URL("/admin/dashboard", nextUrl));
+        }
+        return true;
       }
 
-      // Allow access to all other pages
       return true;
     },
   },
@@ -55,5 +70,5 @@ export const authConfig = {
     strategy: "jwt",
   },
   secret: process.env.AUTH_SECRET || "secret",
-  providers: [], // Add providers with an empty array for now
+  providers: [],
 };
