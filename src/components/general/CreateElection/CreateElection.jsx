@@ -55,6 +55,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import axios from "axios";
+import moment from "moment";
+import "moment-timezone";
 
 // Define the form schema with Zod
 const memberSchema = z.object({
@@ -112,7 +114,7 @@ export default function CreateElectionForm() {
       description: "",
       startTime: "",
       endTime: "",
-      eligibleVoters: 0,
+      eligibleVoters: 1, // Changed from 0 to 1
       rules: ["Each student may cast one vote only"],
       candidates: [
         {
@@ -156,12 +158,35 @@ export default function CreateElectionForm() {
 
   // Handle form submission
   const onSubmit = async (data) => {
+    console.log("Submitting election data:", data);
     setIsSubmitting(true);
     setSubmitError("");
     setSubmitSuccess("");
     try {
+      // Get user's time zone
+      const userTimeZone = moment.tz.guess();
+
+      // Convert local times to UTC
+      const startTimeUTC = moment
+        .tz(data.startTime, userTimeZone)
+        .utc()
+        .toISOString();
+      const endTimeUTC = moment
+        .tz(data.endTime, userTimeZone)
+        .utc()
+        .toISOString();
+
+      const submissionData = {
+        ...data,
+        startTime: startTimeUTC,
+        endTime: endTimeUTC,
+      };
+
       // Send to backend
-      await axios.post("/api/admin/create-election", data);
+      const res = await axios.post(
+        "/api/admin/create-election",
+        submissionData
+      );
       setSubmitSuccess("Election created successfully!");
       setTimeout(() => router.push("/dashboard"), 1200);
     } catch (error) {
@@ -554,7 +579,7 @@ export default function CreateElectionForm() {
                                     <FormLabel>Role</FormLabel>
                                     <FormControl>
                                       <Input
-                                        placeholder="e.g., Presidential Candidate"
+                                        placeholder="e.g., Leader"
                                         {...field}
                                       />
                                     </FormControl>
@@ -562,55 +587,10 @@ export default function CreateElectionForm() {
                                   </FormItem>
                                 )}
                               />
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                onClick={() => {
-                                  const members = form.getValues(
-                                    `candidates.${candidateIndex}.members`
-                                  );
-                                  if (members.length > 1) {
-                                    const updated = members.filter(
-                                      (_, i) => i !== memberIndex
-                                    );
-                                    form.setValue(
-                                      `candidates.${candidateIndex}.members`,
-                                      updated
-                                    );
-                                  }
-                                }}
-                                disabled={
-                                  form.watch(
-                                    `candidates.${candidateIndex}.members`
-                                  ).length <= 1
-                                }
-                                className="self-end"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
                             </div>
                           ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => {
-                            const members = form.getValues(
-                              `candidates.${candidateIndex}.members`
-                            );
-                            form.setValue(
-                              `candidates.${candidateIndex}.members`,
-                              [...members, { name: "", image: "", role: "" }]
-                            );
-                          }}
-                        >
-                          <Plus className="mr-1 h-4 w-4" /> Add Member
-                        </Button>
                       </div>
 
-                      {/* Platform Points */}
                       <div className="space-y-2">
                         <FormLabel>Platform Points</FormLabel>
                         {form
@@ -677,18 +657,6 @@ export default function CreateElectionForm() {
                           <Plus className="mr-1 h-4 w-4" /> Add Platform Point
                         </Button>
                       </div>
-
-                      <div className="pt-2 flex justify-end">
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removeCandidate(candidateIndex)}
-                          disabled={candidateFields.length <= 2}
-                        >
-                          <Trash2 className="mr-1 h-4 w-4" /> Remove Candidate
-                        </Button>
-                      </div>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
@@ -697,7 +665,8 @@ export default function CreateElectionForm() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                size="sm"
+                className="mt-2"
                 onClick={() =>
                   appendCandidate({
                     name: "",
@@ -709,36 +678,18 @@ export default function CreateElectionForm() {
                   })
                 }
               >
-                <CirclePlus className="mr-2 h-4 w-4" /> Add Another Candidate
+                <CirclePlus className="mr-1 h-4 w-4" /> Add Candidate
               </Button>
             </CardContent>
           </Card>
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="min-w-[120px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" /> Create Election
-                </>
-              )}
-            </Button>
-          </div>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Create Election"
+            )}
+          </Button>
         </form>
       </Form>
     </div>
