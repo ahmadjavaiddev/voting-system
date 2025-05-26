@@ -3,11 +3,13 @@ import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
 import Vote from "@/models/Vote";
 import mongoose from "mongoose";
+import { auth } from "@/auth";
 
 export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
-
+    const { user } = await auth();
+    console.log("session ::", user);
     await dbConnect();
     const response = await Election.aggregate([
       {
@@ -53,7 +55,7 @@ export async function GET(request, { params }) {
     }
 
     const already = await Vote.findOne({
-      userId: token.id,
+      userId: user.id,
       electionId: election._id,
     });
     const result = {
