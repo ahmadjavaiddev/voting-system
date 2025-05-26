@@ -9,7 +9,7 @@ const secret = process.env.NEXTAUTH_SECRET;
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret });
-    console.log("Token:", token);
+    console.log("Token:", token, secret);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
