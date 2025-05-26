@@ -9,6 +9,7 @@ const secret = process.env.AUTH_SECRET;
 export async function POST(req) {
   try {
     const token = await getToken({ req, secret });
+    console.log("Token:", token);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
