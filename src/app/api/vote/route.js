@@ -5,9 +5,7 @@ import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
 import User from "@/models/User";
 import * as faceapi from "face-api.js";
-import { getToken } from "next-auth/jwt";
-
-const secret = process.env.NEXTAUTH_SECRET;
+import { auth } from "@/auth";
 
 function compareDescriptors(descriptor1, descriptor2) {
   return faceapi.euclideanDistance(descriptor1, descriptor2) < 0.5;
@@ -36,12 +34,8 @@ export async function POST(req) {
       );
     }
 
-    const token = await getToken({ req, secret });
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userId = token.id;
+    const { user } = await auth();
+    const userId = user.id;
     if (!userId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
