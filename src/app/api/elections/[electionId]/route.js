@@ -9,7 +9,10 @@ export async function GET(request, { params }) {
   try {
     const electionId = (await params).electionId;
     const { user } = await auth();
-    console.log("session ::", user);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const response = await Election.aggregate([
       {

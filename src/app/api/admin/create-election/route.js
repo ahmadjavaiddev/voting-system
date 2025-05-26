@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
+import { auth } from "@/auth";
 
 export async function POST(req) {
   try {
+    const { user } = await auth();
+    if (!user || user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
     if (validateElectionData(body)) {
       return NextResponse.json({ error: "Invalid data." }, { status: 400 });

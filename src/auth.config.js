@@ -25,21 +25,48 @@ export const authConfig = {
       const path = nextUrl.pathname;
 
       const publicRoutes = ["/login", "/register"];
+      const publicApiRoutes = [
+        "/api/auth",
+        "/api/register",
+        "/api/login",
+        "/api/verify-email",
+      ];
 
-      // Redirect logged-in users from public routes to dashboard
-      if (isLoggedIn && publicRoutes.includes(path)) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
-      }
-
-      // Protect dashboard route
-      if (path.startsWith("/dashboard")) {
-        if (!isLoggedIn) {
-          return Response.redirect(new URL("/login", nextUrl));
+      if (publicRoutes.includes(path)) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL("/dashboard", nextUrl));
         }
-        // Allow access to dashboard for all roles
         return true;
       }
 
+      if (publicApiRoutes.some((route) => path.startsWith(route))) {
+        return true;
+      }
+
+      // From this point onwards, all routes are protected (pages or API)
+      if (!isLoggedIn) {
+        console.log(`Unauthorized access attempt to protected route: ${path}`);
+        return false;
+      }
+
+      const userRole = auth?.user?.role;
+      const adminApiRoutes = ["/api/admin", "/api/admin/create-election"];
+
+      if (adminApiRoutes.some((route) => path.startsWith(route))) {
+        if (userRole === "admin") {
+          console.log(`Admin access granted to ${path}`);
+          return true;
+        } else {
+          console.log(
+            `Access denied for user (role: ${userRole}) to admin route ${path}`
+          );
+          return false;
+        }
+      }
+
+      console.log(
+        `User (role: ${userRole}) access granted to protected route: ${path}`
+      );
       return true;
     },
   },
