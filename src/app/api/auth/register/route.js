@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import { emailService, generateVerificationToken } from "@/lib/SendEmail";
 
 // Dummy NADRA API check
 async function nadraCheck(cnic, name) {
@@ -39,24 +40,37 @@ export async function POST(req) {
 
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({
-    name,
-    email,
+    name: name,
+    email: email,
     password: hashed,
     isVerified: false,
     isApproved: false,
     role: "user",
   });
 
-  // Generate email verification token (for demo, just use user._id)
-  const token = user._id.toString();
+  const token = generateVerificationToken();
+  console.log("token ::", token);
+  user.verificationToken = token;
+  user.verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  await user.save();
 
-  // Send verification email (for demo, just log)
-  // In production, use nodemailer to send real email
-  console.log(
-    `Verify email: http://localhost:3000/verify-email?token=${token}`
+  const emailResult = await emailService.sendVerificationEmail(
+    user.email,
+    token,
+    user.name
   );
 
+  if (!emailResult.success) {
+    // If email fails, you might want to delete the user or handle accordingly
+    console.error("Failed to send verification email:", emailResult.error);
+    return NextResponse.json(
+      { error: "Failed to send verification email" },
+      { status: 500 }
+    );
+  }
+
   return NextResponse.json({
-    message: "Registered. Please verify your email.",
+    message:
+      "Registration successful! Please check your email to verify your account.",
   });
 }

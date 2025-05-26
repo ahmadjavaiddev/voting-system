@@ -1,9 +1,9 @@
 "use server";
 
 import dbConnect from "@/lib/db";
+import { emailService, generateVerificationToken } from "@/lib/SendEmail";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
 
 export async function registerUser(prevState, formData) {
   try {
@@ -21,7 +21,7 @@ export async function registerUser(prevState, formData) {
 
     // Hash password
     const hashed = await bcrypt.hash(password, 10);
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashed,
@@ -30,6 +30,24 @@ export async function registerUser(prevState, formData) {
       isApproved: false,
       role: "user",
     });
+
+    const token = generateVerificationToken();
+
+    user.verificationToken = token;
+    user.verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    await user.save();
+
+    const emailResult = await emailService.sendVerificationEmail(
+      user.email,
+      token,
+      user.name
+    );
+
+    if (!emailResult.success) {
+      // If email fails, you might want to delete the user or handle accordingly
+      console.error("Failed to send verification email:", emailResult.error);
+      return "Failed to send verification email";
+    }
 
     // Redirect to login page after successful registration
     return undefined;
