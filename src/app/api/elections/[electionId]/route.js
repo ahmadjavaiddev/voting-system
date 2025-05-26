@@ -5,7 +5,7 @@ import Vote from "@/models/Vote";
 import mongoose from "mongoose";
 import { getToken } from "next-auth/jwt";
 
-const secret = process.env.AUTH_SECRET;
+const secret = process.env.NEXTAUTH_SECRET;
 
 export async function GET(request, { params }) {
   try {

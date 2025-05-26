@@ -7,7 +7,7 @@ import User from "@/models/User";
 import * as faceapi from "face-api.js";
 import { getToken } from "next-auth/jwt";
 
-const secret = process.env.AUTH_SECRET;
+const secret = process.env.NEXTAUTH_SECRET;
 
 function compareDescriptors(descriptor1, descriptor2) {
   return faceapi.euclideanDistance(descriptor1, descriptor2) < 0.5;
