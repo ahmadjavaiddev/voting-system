@@ -2,18 +2,9 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
-import { getToken } from "next-auth/jwt";
-
-const secret = process.env.NEXTAUTH_SECRET;
 
 export async function POST(req) {
   try {
-    const token = await getToken({ req, secret });
-    console.log("Token:", token, secret);
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await req.json();
     if (validateElectionData(body)) {
       return NextResponse.json({ error: "Invalid data." }, { status: 400 });
