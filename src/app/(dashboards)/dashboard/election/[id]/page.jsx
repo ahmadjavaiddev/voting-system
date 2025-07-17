@@ -1,7 +1,7 @@
 "use client";
 import ElectionHeader from "@/components/general/election-details/ElectionHeader";
 import LeftColumn from "@/components/general/election-details/LeftColumn";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import RightColumn from "@/components/general/election-details/RightColumn";
 import axiosInstance from "@/lib/axios";
@@ -9,7 +9,6 @@ import ElectionDetailsLoading from "@/components/general/loadings/ElectionDetail
 import BackButton from "@/components/custom/BackButton";
 
 const ElectionDetails = () => {
-  const router = useRouter();
   const electionId = useParams().id;
   const [electionData, setElectionData] = useState({});
   const [loading, setLoading] = useState(true);
