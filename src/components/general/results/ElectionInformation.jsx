@@ -11,7 +11,7 @@ const ElectionInformation = ({ selectedElection }) => {
         <h3 className="font-medium">Election Information</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-        <div>
+        <div className="bg-muted/80 p-4 rounded-lg">
           <p className="text-muted-foreground mb-1">Start Date:</p>
           <p className="font-medium">
             {selectedElection.startTime
@@ -19,7 +19,7 @@ const ElectionInformation = ({ selectedElection }) => {
               : "-"}
           </p>
         </div>
-        <div>
+        <div className="bg-muted/80 p-4 rounded-lg">
           <p className="text-muted-foreground mb-1">End Date:</p>
           <p className="font-medium">
             {selectedElection.endTime
@@ -27,11 +27,11 @@ const ElectionInformation = ({ selectedElection }) => {
               : "-"}
           </p>
         </div>
-        <div>
+        <div className="bg-muted/80 p-4 rounded-lg">
           <p className="text-muted-foreground mb-1">Eligible Voters:</p>
           <p className="font-medium">{selectedElection.eligibleVoters}</p>
         </div>
-        <div>
+        <div className="bg-muted/80 p-4 rounded-lg">
           <p className="text-muted-foreground mb-1">Current Participation:</p>
           <p className="font-medium">
             {getTotalCastVotes(selectedElection)} votes (

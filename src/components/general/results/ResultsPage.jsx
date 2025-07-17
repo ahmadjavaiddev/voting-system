@@ -28,6 +28,12 @@ const ResultsPage = ({ elections }) => {
       );
       if (election) {
         setSelectedElection(election);
+        setTimeout(() => {
+          const element = document.getElementById(election._id);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 1000);
       }
     }
   }, [liveElections.length, electionId]);
@@ -42,7 +48,7 @@ const ResultsPage = ({ elections }) => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-7xl">
-      <BackButton />
+      <BackButton url="/dashboard" />
 
       <div className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">Election Results</h1>

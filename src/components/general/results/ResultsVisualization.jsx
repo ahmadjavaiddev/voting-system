@@ -56,7 +56,7 @@ const ResultsVisualization = ({ selectedElection }) => {
                 </div>
               </div>
               {/* Progress with custom indicator color */}
-              <div className="overflow-hidden h-5 text-xs flex rounded-full bg-gray-100">
+              <div className="overflow-hidden h-5 text-xs flex rounded-full bg-gray-200">
                 {calculatePercentage(candidate) > 10 ? (
                   <div
                     style={{
@@ -73,7 +73,7 @@ const ResultsVisualization = ({ selectedElection }) => {
                     </span>
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
                     <span className="px-2 font-semibold">0%</span>
                   </div>
                 )}
