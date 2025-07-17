@@ -38,6 +38,7 @@ const registerSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   cnic: z.string().min(5, "CNIC is required"),
+  faceDescriptor: z.string().min(1, "Face authentication is required"),
 });
 
 function RegisterForm() {
@@ -57,6 +58,7 @@ function RegisterForm() {
       email: "",
       password: "",
       cnic: "",
+      faceDescriptor: "",
     },
   });
 
@@ -73,11 +75,21 @@ function RegisterForm() {
   }, [submitted, errorMessage, router]);
 
   const handleFaceCapture = (descriptor) => {
-    setFaceDescriptor(JSON.stringify(descriptor));
+    const descriptorString = JSON.stringify(descriptor);
+    setFaceDescriptor(descriptorString);
     setFaceAuthCompleted(true);
+    // Update the form value for validation
+    form.setValue('faceDescriptor', descriptorString);
+    form.clearErrors('faceDescriptor');
   };
 
   const handleSubmit = async (formData) => {
+    // Validate the form before submission
+    const isValid = await form.trigger();
+    if (!isValid) {
+      return;
+    }
+
     if (faceDescriptor) {
       formData.append('faceDescriptor', faceDescriptor);
     }
@@ -214,18 +226,18 @@ function RegisterForm() {
 
               {/* Face Authentication Section */}
               <div className="space-y-2">
-                <Label>Face Authentication (Optional)</Label>
+                <Label>Face Authentication *</Label>
                 <div className="p-3 border rounded-lg bg-gray-50">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="h-4 w-4 text-blue-600" />
                     <span className="text-sm font-medium">
-                      {faceAuthCompleted ? "Face data captured" : "Secure your voting"}
+                      {faceAuthCompleted ? "Face data captured" : "Complete face authentication"}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3">
                     {faceAuthCompleted 
                       ? "Face authentication has been set up successfully. You can now use face recognition for secure voting."
-                      : "Add face authentication for enhanced security during voting. This is optional but recommended."
+                      : "Face authentication is required for secure voting. Please capture your face data to continue."
                     }
                   </p>
                   {!faceAuthCompleted && (
@@ -246,11 +258,20 @@ function RegisterForm() {
                     </div>
                   )}
                 </div>
+                {form.formState.errors.faceDescriptor && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.faceDescriptor.message}
+                  </p>
+                )}
               </div>
 
               <input type="hidden" name="redirectTo" value={callbackUrl} />
 
-              <Button type="submit" className="w-full" disabled={isPending}>
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isPending || !faceAuthCompleted}
+              >
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -260,6 +281,12 @@ function RegisterForm() {
                   "Register"
                 )}
               </Button>
+              
+              {!faceAuthCompleted && (
+                <p className="text-sm text-amber-600 text-center mt-2">
+                  Please complete face authentication to register
+                </p>
+              )}
             </form>
           </CardContent>
 

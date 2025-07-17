@@ -11,6 +11,15 @@ export async function registerUser(prevState, formData) {
     const data = Object.fromEntries(formData.entries());
     const { name, email, password, cnic, faceDescriptor } = data;
 
+    // Validate required fields
+    if (!name || !email || !password || !cnic) {
+      return "All fields are required.";
+    }
+
+    if (!faceDescriptor) {
+      return "Face authentication is required for registration.";
+    }
+
     await dbConnect();
 
     // Check for existing user
@@ -29,8 +38,8 @@ export async function registerUser(prevState, formData) {
       isVerified: false,
       isApproved: false,
       role: "user",
-      faceId: faceDescriptor || null,
-      faceRecognitionEnabled: faceDescriptor ? true : false,
+      faceId: faceDescriptor,
+      faceRecognitionEnabled: true,
     });
 
     const token = generateVerificationToken();
