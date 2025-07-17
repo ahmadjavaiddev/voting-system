@@ -60,7 +60,7 @@ export async function GET(request, { params }) {
     const already = await Vote.findOne({
       userId: user.id,
       electionId: election._id,
-    });
+    }).lean();
     const result = {
       ...election,
       userHasVoted: !!already,

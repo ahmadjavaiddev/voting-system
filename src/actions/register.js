@@ -23,7 +23,7 @@ export async function registerUser(prevState, formData) {
     await dbConnect();
 
     // Check for existing user
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({ email }).lean();
     if (existing) {
       return "Email already registered.";
     }

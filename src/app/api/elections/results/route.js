@@ -6,10 +6,12 @@ import Candidate from "@/models/Candidate";
 export async function GET() {
   try {
     await dbConnect();
-    const elections = await Election.find().populate(
-      "candidates",
-      "name image slogan color members description votes platform winner"
-    );
+    const elections = await Election.find()
+      .populate(
+        "candidates",
+        "name image slogan color members description votes platform winner"
+      )
+      .lean();
 
     return NextResponse.json({ elections: elections.reverse() });
   } catch (error) {

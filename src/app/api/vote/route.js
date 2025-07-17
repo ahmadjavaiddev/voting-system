@@ -50,7 +50,7 @@ export async function POST(req) {
       );
     }
 
-    const election = await Election.findById(electionId);
+    const election = await Election.findById(electionId).lean();
     if (!election) {
       return NextResponse.json(
         { error: "Election not found." },
@@ -67,7 +67,7 @@ export async function POST(req) {
     }
 
     // Check if user already voted
-    const already = await Vote.findOne({ userId, electionId });
+    const already = await Vote.findOne({ userId, electionId }).lean();
     if (already) {
       return NextResponse.json(
         { error: "You have already voted in this election." },

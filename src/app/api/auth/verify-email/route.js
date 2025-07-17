@@ -13,12 +13,12 @@ export async function GET(request) {
         { status: 400 }
       );
     }
-    
+
     await dbConnect();
     const user = await User.findOne({
       verificationToken: token,
       verificationTokenExpiry: { $gt: new Date() },
-    });
+    }).lean();
     if (!user) {
       return NextResponse.json(
         { error: "Invalid or expired verification token" },

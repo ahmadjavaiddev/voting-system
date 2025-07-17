@@ -5,10 +5,12 @@ import Candidate from "@/models/Candidate";
 const getElectionsResults = async () => {
   try {
     await dbConnect();
-    const elections = await Election.find().populate(
-      "candidates",
-      "name image slogan color members description votes platform winner"
-    );
+    const elections = await Election.find()
+      .populate(
+        "candidates",
+        "name image slogan color members description votes platform winner"
+      )
+      .lean();
 
     const response = elections.reverse();
     return response;
