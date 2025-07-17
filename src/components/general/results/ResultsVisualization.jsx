@@ -1,9 +1,10 @@
 import React from "react";
+import { getTotalCastVotes } from "@/lib/index";
 
 const ResultsVisualization = ({ selectedElection }) => {
   function calculatePercentage(candidate) {
     const value = candidate.votes || 0;
-    const total = selectedElection.eligibleVoters;
+    const total = getTotalCastVotes(selectedElection);
 
     if (total === 0) return 0;
     return Math.round((value / total) * 100);

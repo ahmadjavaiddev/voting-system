@@ -6,6 +6,10 @@ import { Calendar, HelpCircle, Info, Shield, Timer, Users } from "lucide-react";
 import React from "react";
 
 const LeftColumn = ({ election }) => {
+  if (!election) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="md:col-span-1 space-y-6">
       <Card>

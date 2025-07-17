@@ -11,6 +11,10 @@ import moment from "moment";
 import React from "react";
 
 const ElectionHeader = ({ election }) => {
+  if (!election) {
+    return <div>Loading...</div>;
+  }
+
   const now = moment();
   const start = moment(election.startTime);
   const end = moment(election.endTime);
@@ -52,7 +56,7 @@ const ElectionHeader = ({ election }) => {
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Total votes cast</p>
+              <p>Total voters</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

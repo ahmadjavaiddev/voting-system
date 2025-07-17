@@ -8,15 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDate } from "@/lib/index";
+import { formatDate, getTotalCastVotes } from "@/lib/index";
 import { CheckCircle2, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 const PreviousElectionCard = ({ election }) => {
-  const winner = election.candidates.reduce((max, candidate) => {
-    return candidate.votes > max.votes ? candidate : max;
-  }, election.candidates[0]);
+  const totalVotes = getTotalCastVotes(election);
+  
+  // Find winner - candidate with highest votes
+  const winner = election.candidates && election.candidates.length > 0 
+    ? election.candidates.reduce((max, candidate) => {
+        return (candidate.votes || 0) > (max.votes || 0) ? candidate : max;
+      }, election.candidates[0])
+    : null;
 
   return (
     <Card className="overflow-hidden">
@@ -31,7 +36,7 @@ const PreviousElectionCard = ({ election }) => {
           </Badge>
         </div>
         <CardDescription>
-          {election.candidates.length} candidates • {election.votes} total votes
+          {election.candidates.length} candidates • {totalVotes} total votes
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-2">
@@ -39,8 +44,8 @@ const PreviousElectionCard = ({ election }) => {
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Winner:</span>
             <span className="bg-green-100 rounded px-2 flex items-center">
-              {winner.name}
-              <CheckCircle2 className="ml-1 h-4 w-4" />
+              {winner ? winner.name : "No winner"}
+              {winner && <CheckCircle2 className="ml-1 h-4 w-4" />}
             </span>
           </div>
           <div className="flex justify-between text-sm">
@@ -59,13 +64,13 @@ const PreviousElectionCard = ({ election }) => {
                   key={index}
                   variant="outline"
                   className={
-                    party.winner
+                    winner && party._id === winner._id
                       ? "bg-green-100 text-green-800 border-green-200"
                       : "bg-background"
                   }
                 >
                   {party.name}{" "}
-                  {party.winner && <CheckCircle2 className="ml-1 h-3 w-3" />}
+                  {winner && party._id === winner._id && <CheckCircle2 className="ml-1 h-3 w-3" />}
                 </Badge>
               ))}
             </div>

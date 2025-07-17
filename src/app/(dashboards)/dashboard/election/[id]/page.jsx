@@ -13,13 +13,20 @@ const ElectionDetails = () => {
   const [electionData, setElectionData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
+  const fetchElectionData = async () => {
+    try {
       const response = await axiosInstance.get(`/api/elections/${electionId}`);
       setElectionData(response.data.election);
       setLoading(false);
-    })();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching election data:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchElectionData();
+  }, [electionId]);
 
   if (loading) {
     return <ElectionDetailsLoading />;
@@ -31,7 +38,7 @@ const ElectionDetails = () => {
       <ElectionHeader election={electionData} />
       <div className="grid gap-6 md:grid-cols-3">
         <LeftColumn election={electionData} />
-        <RightColumn election={electionData} />
+        <RightColumn election={electionData} onVoteSuccess={fetchElectionData} />
       </div>
     </div>
   );

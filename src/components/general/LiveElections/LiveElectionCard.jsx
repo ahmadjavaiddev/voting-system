@@ -9,12 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTotalCastVotes } from "@/lib/index";
 import { ChevronRight } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
 
 const LiveElectionCard = ({ election }) => {
+  const totalVotes = getTotalCastVotes(election);
+  
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">
@@ -25,7 +28,7 @@ const LiveElectionCard = ({ election }) => {
           </Badge>
         </div>
         <CardDescription>
-          {election.candidates.length} candidates • {election.votes} votes cast
+          {election?.candidates?.length} candidates • {totalVotes} votes cast
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-2">

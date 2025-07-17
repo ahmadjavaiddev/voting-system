@@ -18,7 +18,11 @@ import SuccessDialog from "./SuccessDialog";
 import axios from "axios";
 import FaceAuthDialog from "./FaceAuthDialog";
 
-const RightColumn = ({ election }) => {
+const RightColumn = ({ election, onVoteSuccess }) => {
+  if (!election) {
+    return <div>Loading...</div>;
+  }
+
   const [selectedCandidate, setSelectedCandidate] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
@@ -60,6 +64,11 @@ const RightColumn = ({ election }) => {
         setShowSuccessDialog(true);
         setCapturedDescriptor(null);
         setErrorMessage("");
+        
+        // Refresh election data to show updated vote counts
+        if (onVoteSuccess) {
+          onVoteSuccess();
+        }
       } else if (response.data.error) {
         setErrorMessage(response.data.error);
         setIsVoting(false);

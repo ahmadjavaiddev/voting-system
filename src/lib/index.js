@@ -60,23 +60,35 @@ export function getTimeLeft(endDateString) {
 }
 
 export function calculatePercentage(election) {
+  if (!election || !election.eligibleVoters || election.eligibleVoters === 0) {
+    return 0;
+  }
+  
   const value = getTotalCastVotes(election);
   const total = election.eligibleVoters;
-
-  if (total === 0) return 0;
+  
   return Math.round((value / total) * 100);
 }
 
 export function getTimeEnded(time) {
-  if (time) {
+  if (!time) return false;
+  
+  try {
     const endTime = new Date(time)?.getTime();
     const now = Date.now();
-    return endTime <= now ? true : false;
+    return endTime <= now;
+  } catch (error) {
+    console.error("Error parsing time:", error);
+    return false;
   }
 }
 
 export function getTotalCastVotes(election) {
-  return election.candidates?.reduce(
+  if (!election || !election.candidates || !Array.isArray(election.candidates)) {
+    return 0;
+  }
+  
+  return election.candidates.reduce(
     (acc, candidate) => acc + (candidate.votes || 0),
     0
   );
