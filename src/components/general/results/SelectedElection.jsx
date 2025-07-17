@@ -12,7 +12,7 @@ import ElectionInformation from "./ElectionInformation";
 
 const SelectedElection = ({ selectedElection }) => {
   return (
-    <div className="lg:col-span-2 space-y-6">
+    <div className="lg:col-span-2 space-y-6 mb-5" id={selectedElection._id}>
       {selectedElection && (
         <div className="lg:col-span-2 space-y-6 sticky top-16">
           <Card>

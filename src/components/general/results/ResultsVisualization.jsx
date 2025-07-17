@@ -42,7 +42,7 @@ const ResultsVisualization = ({ selectedElection }) => {
               <div className="flex mb-2 items-center justify-between">
                 <div>
                   <span
-                    className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white ${
+                    className={`text-xs md:font-semibold inline-block md:py-1 px-2 uppercase rounded-full text-white ${
                       candidate?.color?.includes("bg-")
                         ? candidate?.color
                         : `bg-[${candidate?.color}]`

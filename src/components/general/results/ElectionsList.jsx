@@ -19,6 +19,13 @@ const ElectionsList = ({
   // Handle election selection
   const handleElectionSelect = (election) => {
     setSelectedElection(election);
+    // Scroll to the css id using the election ID
+    setTimeout(() => {
+      const element = document.getElementById(election._id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 1000);
   };
 
   return (

@@ -5,7 +5,7 @@ import React from "react";
 
 const ElectionInformation = ({ selectedElection }) => {
   return (
-    <div className="bg-muted/20 p-4 rounded-lg">
+    <div className="bg-muted/20 md:p-4 rounded-lg">
       <div className="flex items-center gap-2 mb-2">
         <Info className="h-4 w-4 text-muted-foreground" />
         <h3 className="font-medium">Election Information</h3>
