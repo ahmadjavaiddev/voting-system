@@ -6,6 +6,11 @@ import SelectedElectionComponent from "@/components/general/results/SelectedElec
 import BackButton from "@/components/custom/BackButton";
 import { useRouter, useSearchParams } from "next/navigation";
 
+function isMobile() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 1024px)").matches; // Tailwind's lg breakpoint
+}
+
 const ResultsPage = ({ elections }) => {
   // Hooks
   const router = useRouter();
@@ -28,12 +33,13 @@ const ResultsPage = ({ elections }) => {
       );
       if (election) {
         setSelectedElection(election);
-        setTimeout(() => {
+        if (isMobile()) {
+          // Scroll to the selected election if on mobile
           const element = document.getElementById(election._id);
           if (element) {
             element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-        }, 1000);
+        }
       }
     }
   }, [liveElections.length, electionId]);
@@ -62,6 +68,7 @@ const ResultsPage = ({ elections }) => {
           selectedElection={selectedElection}
           setSelectedElection={setSelectedElection}
           liveElections={liveElections}
+          isMobile={isMobile()}
         />
         {selectedElection?.candidates?.length >= 2 && (
           <SelectedElectionComponent selectedElection={selectedElection} />
