@@ -28,7 +28,7 @@ const PreviousElectionsTab = () => {
     return (
       <div className="col-span-full flex items-center justify-center py-12 text-center gap-4">
         <div className="h-8 w-8 rounded-full border-4 border-gray-300 border-t-blue-500 animate-spin"></div>
-        <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200">
+        <h3 className="md:text-lg font-medium text-gray-700 dark:text-gray-200">
           Loading Previous Elections...
         </h3>
       </div>

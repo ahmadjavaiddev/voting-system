@@ -8,7 +8,7 @@ export default function AdminLayout({ children }) {
       <Sidebar />
       <div className="w-full">
         <AdminHeader />
-        <div className="container mx-auto px-4">{children}</div>
+        <div className="container mx-auto md:px-4">{children}</div>
       </div>
     </SidebarProvider>
   );

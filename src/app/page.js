@@ -30,7 +30,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero Section */}
       <main className="container mx-auto px-4 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 text-sm font-medium mb-6">
             <Vote className="w-4 h-4" />
             <span>Secure Online Voting Platform</span>
@@ -64,7 +64,7 @@ export default function Home() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="bg-white flex flex-col items-center justify-center p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
               >
                 <div className="w-12 h-12 flex items-center justify-center bg-blue-50 rounded-lg text-blue-600 mb-4">
                   {feature.icon}
@@ -76,25 +76,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Quick Access Section */}
-      <section className="bg-white py-16 border-t">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-10">Quick Access</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/dashboard">
-              <Button variant="outline" size="lg" className="gap-2">
-                <User className="w-4 h-4" /> User Dashboard
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="outline" size="lg" className="gap-2">
-                <Lock className="w-4 h-4" /> Admin Dashboard
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
