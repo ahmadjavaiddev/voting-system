@@ -79,8 +79,8 @@ function RegisterForm() {
     setFaceDescriptor(descriptorString);
     setFaceAuthCompleted(true);
     // Update the form value for validation
-    form.setValue('faceDescriptor', descriptorString);
-    form.clearErrors('faceDescriptor');
+    form.setValue("faceDescriptor", descriptorString);
+    form.clearErrors("faceDescriptor");
   };
 
   const handleSubmit = async (formData) => {
@@ -91,7 +91,7 @@ function RegisterForm() {
     }
 
     if (faceDescriptor) {
-      formData.append('faceDescriptor', faceDescriptor);
+      formData.append("faceDescriptor", faceDescriptor);
     }
     setSubmitted(true);
     await formAction(formData);
@@ -100,22 +100,10 @@ function RegisterForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="p-3 bg-primary rounded-full">
-              <Vote className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-600 mt-2">
-            Register for your ElectionsHub account
-          </p>
-        </div>
-
         <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              Register
+              Create Account
             </CardTitle>
             <CardDescription className="text-center">
               Enter your details to create your account
@@ -131,10 +119,7 @@ function RegisterForm() {
           )}
 
           <CardContent className="space-y-4">
-            <form
-              action={handleSubmit}
-              className="space-y-4"
-            >
+            <form action={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <div className="relative">
@@ -231,14 +216,15 @@ function RegisterForm() {
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="h-4 w-4 text-blue-600" />
                     <span className="text-sm font-medium">
-                      {faceAuthCompleted ? "Face data captured" : "Complete face authentication"}
+                      {faceAuthCompleted
+                        ? "Face data captured"
+                        : "Complete face authentication"}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3">
-                    {faceAuthCompleted 
+                    {faceAuthCompleted
                       ? "Face authentication has been set up successfully. You can now use face recognition for secure voting."
-                      : "Face authentication is required for secure voting. Please capture your face data to continue."
-                    }
+                      : "Face authentication is required for secure voting. Please capture your face data to continue."}
                   </p>
                   {!faceAuthCompleted && (
                     <Button
@@ -254,7 +240,9 @@ function RegisterForm() {
                   {faceAuthCompleted && (
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                      <span className="text-xs text-green-700">Ready for secure voting</span>
+                      <span className="text-xs text-green-700">
+                        Ready for secure voting
+                      </span>
                     </div>
                   )}
                 </div>
@@ -267,9 +255,9 @@ function RegisterForm() {
 
               <input type="hidden" name="redirectTo" value={callbackUrl} />
 
-              <Button 
-                type="submit" 
-                className="w-full" 
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={isPending || !faceAuthCompleted}
               >
                 {isPending ? (
@@ -281,7 +269,7 @@ function RegisterForm() {
                   "Register"
                 )}
               </Button>
-              
+
               {!faceAuthCompleted && (
                 <p className="text-sm text-amber-600 text-center mt-2">
                   Please complete face authentication to register
