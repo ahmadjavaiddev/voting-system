@@ -15,7 +15,10 @@ const ResultsVisualization = ({ selectedElection }) => {
       <h3 className="text-lg font-semibold mb-4">Current Results</h3>
       <div className="space-y-6">
         {selectedElection?.candidates?.map((candidate) => (
-          <div key={candidate._id} className="space-y-2">
+          <div
+            key={candidate._id}
+            className="space-y-2 shadow-sm p-4 bg-muted/20 rounded-lg border border-muted"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img
@@ -53,23 +56,27 @@ const ResultsVisualization = ({ selectedElection }) => {
                 </div>
               </div>
               {/* Progress with custom indicator color */}
-              <div className="overflow-hidden h-6 text-xs flex rounded-full bg-muted/30">
-                <div
-                  style={{
-                    width: `${calculatePercentage(candidate)}%`,
-                  }}
-                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                    candidate?.color?.includes("bg-")
-                      ? candidate?.color
-                      : `bg-[${candidate?.color}]`
-                  }`}
-                >
-                  {calculatePercentage(candidate) > 10 && (
+              <div className="overflow-hidden h-5 text-xs flex rounded-full bg-gray-100">
+                {calculatePercentage(candidate) > 10 ? (
+                  <div
+                    style={{
+                      width: `${calculatePercentage(candidate)}%`,
+                    }}
+                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
+                      candidate?.color?.includes("bg-")
+                        ? candidate?.color
+                        : `bg-[${candidate?.color}]`
+                    }`}
+                  >
                     <span className="px-2 font-semibold">
                       {calculatePercentage(candidate)}%
                     </span>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                    <span className="px-2 font-semibold">0%</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
