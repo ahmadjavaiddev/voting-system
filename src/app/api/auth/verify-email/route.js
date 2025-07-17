@@ -18,7 +18,7 @@ export async function GET(request) {
     const user = await User.findOne({
       verificationToken: token,
       verificationTokenExpiry: { $gt: new Date() },
-    }).lean();
+    });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid or expired verification token" },
