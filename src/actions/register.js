@@ -9,7 +9,7 @@ export async function registerUser(prevState, formData) {
   try {
     // Convert FormData to plain object
     const data = Object.fromEntries(formData.entries());
-    const { name, email, password, cnic } = data;
+    const { name, email, password, cnic, faceDescriptor } = data;
 
     await dbConnect();
 
@@ -29,6 +29,8 @@ export async function registerUser(prevState, formData) {
       isVerified: false,
       isApproved: false,
       role: "user",
+      faceId: faceDescriptor || null,
+      faceRecognitionEnabled: faceDescriptor ? true : false,
     });
 
     const token = generateVerificationToken();

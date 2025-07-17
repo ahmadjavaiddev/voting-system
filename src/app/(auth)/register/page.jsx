@@ -12,6 +12,7 @@ import {
   User,
   IdCard,
   Vote,
+  Shield,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useActionState } from "react";
 import { registerUser } from "@/actions/register";
+import FaceAuthDialog from "@/components/auth/FaceAuthDialog";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -44,6 +46,9 @@ function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [submitted, setSubmitted] = useState(false);
+  const [showFaceAuthDialog, setShowFaceAuthDialog] = useState(false);
+  const [faceDescriptor, setFaceDescriptor] = useState(null);
+  const [faceAuthCompleted, setFaceAuthCompleted] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(registerSchema),
@@ -66,6 +71,19 @@ function RegisterForm() {
       router.push("/login");
     }
   }, [submitted, errorMessage, router]);
+
+  const handleFaceCapture = (descriptor) => {
+    setFaceDescriptor(JSON.stringify(descriptor));
+    setFaceAuthCompleted(true);
+  };
+
+  const handleSubmit = async (formData) => {
+    if (faceDescriptor) {
+      formData.append('faceDescriptor', faceDescriptor);
+    }
+    setSubmitted(true);
+    await formAction(formData);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
@@ -102,10 +120,7 @@ function RegisterForm() {
 
           <CardContent className="space-y-4">
             <form
-              action={async (formData) => {
-                setSubmitted(true);
-                await formAction(formData);
-              }}
+              action={handleSubmit}
               className="space-y-4"
             >
               <div className="space-y-2">
@@ -197,6 +212,42 @@ function RegisterForm() {
                 )}
               </div>
 
+              {/* Face Authentication Section */}
+              <div className="space-y-2">
+                <Label>Face Authentication (Optional)</Label>
+                <div className="p-3 border rounded-lg bg-gray-50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium">
+                      {faceAuthCompleted ? "Face data captured" : "Secure your voting"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    {faceAuthCompleted 
+                      ? "Face authentication has been set up successfully. You can now use face recognition for secure voting."
+                      : "Add face authentication for enhanced security during voting. This is optional but recommended."
+                    }
+                  </p>
+                  {!faceAuthCompleted && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowFaceAuthDialog(true)}
+                    >
+                      <Shield className="h-4 w-4 mr-2" />
+                      Set Up Face Authentication
+                    </Button>
+                  )}
+                  {faceAuthCompleted && (
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                      <span className="text-xs text-green-700">Ready for secure voting</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <input type="hidden" name="redirectTo" value={callbackUrl} />
 
               <Button type="submit" className="w-full" disabled={isPending}>
@@ -226,6 +277,13 @@ function RegisterForm() {
             </div>
           </CardFooter>
         </Card>
+
+        {/* Face Authentication Dialog */}
+        <FaceAuthDialog
+          open={showFaceAuthDialog}
+          onClose={() => setShowFaceAuthDialog(false)}
+          onCapture={handleFaceCapture}
+        />
       </div>
     </div>
   );
