@@ -65,7 +65,8 @@ function LoginForm() {
               <Alert className="mb-4 bg-yellow-50 border-yellow-200">
                 <AlertDescription>
                   We've sent a verification email to your address. Please check
-                  your inbox and follow the instructions to verify your account.
+                  your inbox. If you already have verified your account, you can
+                  log in now.
                 </AlertDescription>
               </Alert>
             </div>
