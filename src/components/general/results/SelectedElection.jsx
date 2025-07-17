@@ -28,7 +28,7 @@ const SelectedElection = ({ selectedElection }) => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 px-4">
               <ElectionStats selectedElection={selectedElection} />
               <hr className="border" />
               <ResultsVisualization selectedElection={selectedElection} />
