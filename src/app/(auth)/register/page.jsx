@@ -70,7 +70,7 @@ function RegisterForm() {
 
   useEffect(() => {
     if (submitted && errorMessage === undefined) {
-      router.push("/login");
+      router.push("/login?verifyMessage=true");
     }
   }, [submitted, errorMessage, router]);
 

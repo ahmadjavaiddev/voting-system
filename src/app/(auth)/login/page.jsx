@@ -30,6 +30,7 @@ const loginSchema = z.object({
 function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "";
+  const verifyMessage = searchParams.get("verifyMessage") || null;
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
@@ -59,6 +60,16 @@ function LoginForm() {
             </CardDescription>
           </CardHeader>
 
+          {verifyMessage && (
+            <div className="px-6">
+              <Alert className="mb-4 bg-yellow-50 border-yellow-200">
+                <AlertDescription>
+                  We've sent a verification email to your address. Please check
+                  your inbox and follow the instructions to verify your account.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
           {errorMessage && (
             <div className="px-6">
               <Alert variant="destructive" className="mb-4">
