@@ -17,7 +17,7 @@ import React from "react";
 
 const LiveElectionCard = ({ election }) => {
   const totalVotes = getTotalCastVotes(election);
-  
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-3">
@@ -38,7 +38,7 @@ const LiveElectionCard = ({ election }) => {
             <span>{moment(election.startTime).format("LLL")}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Ends in:</span>
+            <span className="text-muted-foreground">Ends At:</span>
             <span className="font-medium text-amber-600">
               {moment().isAfter(moment(election.endTime))
                 ? "Ended"

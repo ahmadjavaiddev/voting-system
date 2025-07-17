@@ -79,7 +79,6 @@ const formSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().min(1, "End time is required"),
-  eligibleVoters: z.coerce.number().int().positive("Must be a positive number"),
   rules: z.array(z.string().min(1, "Rule cannot be empty")),
   candidates: z
     .array(candidateSchema)
@@ -114,7 +113,6 @@ export default function CreateElectionForm() {
       description: "",
       startTime: "",
       endTime: "",
-      eligibleVoters: 1, // Changed from 0 to 1
       rules: ["Each student may cast one vote only"],
       candidates: [
         {
@@ -299,27 +297,6 @@ export default function CreateElectionForm() {
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="eligibleVoters"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Eligible Voters</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Enter the total number of people eligible to vote in this
-                      election.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}

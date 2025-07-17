@@ -39,11 +39,11 @@ const UpcomingElectionCard = ({ election }) => {
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Start date:</span>
+            <span className="text-muted-foreground">Start Time:</span>
             <span>{moment(election.startTime).format("LLL")}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">End date:</span>
+            <span className="text-muted-foreground">End Time:</span>
             <span>{moment(election.endTime).format("LLL")}</span>
           </div>
           <div className="mt-2">
@@ -51,18 +51,14 @@ const UpcomingElectionCard = ({ election }) => {
             <div className="flex flex-wrap gap-2">
               {election.candidates.map((party, index) => (
                 <Badge key={index} variant="outline" className="bg-background">
-                  {party.name}
+                  {party?.name}
                 </Badge>
               ))}
             </div>
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full">
-          Set Reminder
-        </Button>
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 };

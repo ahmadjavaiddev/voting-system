@@ -3,6 +3,7 @@ import dbConnect from "@/lib/db";
 import Election from "@/models/Election";
 import Candidate from "@/models/Candidate";
 import { auth } from "@/auth";
+import User from "@/models/User";
 
 export async function POST(req) {
   try {
@@ -25,12 +26,18 @@ export async function POST(req) {
 
     await dbConnect();
     const candidatesID = await createCandidates(body.candidates);
+    // count the number of users
+    const users = await User.find({
+      isApproved: true,
+      isVerified: true,
+      faceId: { $ne: null },
+    }).lean();
 
     const election = await Election.create({
       title: body.title,
       candidates: candidatesID,
       description: body.description,
-      eligibleVoters: body.eligibleVoters,
+      eligibleVoters: users.length,
       rules: body.rules,
       startTime: new Date(body.startTime),
       endTime: new Date(body.endTime),
@@ -53,13 +60,11 @@ function validateElectionData(body) {
       body.description,
       body.startTime,
       body.endTime,
-      body.eligibleVoters,
       body.rules,
       body.candidates,
     ].every((item) => !item) ||
     !Array.isArray(body.candidates) ||
     body.candidates.length < 2 ||
-    body.eligibleVoters < 3 ||
     !Array.isArray(body.rules) ||
     body.rules.length < 1
   );
