@@ -13,6 +13,10 @@ const VoteSchema = new Schema(
       ref: "Candidate",
       required: true,
     },
+    memberId: {
+      type: Schema.Types.ObjectId,
+      required: false,
+    },
   },
   { timestamps: true }
 );

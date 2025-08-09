@@ -26,7 +26,8 @@ async function faceRecognition(userId, submittedDescriptor) {
 
 export async function POST(req) {
   try {
-    const { electionId, candidateId, userDescriptor } = await req.json();
+    const { electionId, candidateId, memberId, userDescriptor } =
+      await req.json();
     if (!electionId || !candidateId || !userDescriptor) {
       return NextResponse.json(
         { error: "Missing required fields." },
@@ -75,9 +76,24 @@ export async function POST(req) {
       );
     }
 
-    // Cast vote
-    await Vote.create({ userId, electionId, candidateId });
-    await Candidate.updateOne({ _id: candidateId }, { $inc: { votes: 1 } });
+    // Cast vote (with optional member)
+    await Vote.create({
+      userId,
+      electionId,
+      candidateId,
+      memberId: memberId || null,
+    });
+
+    // Update candidate vote count
+    if (memberId) {
+      // Increment overall candidate votes and the specific member's votes
+      await Candidate.updateOne(
+        { _id: candidateId, "members._id": memberId },
+        { $inc: { votes: 1, "members.$.votes": 1 } }
+      );
+    } else {
+      await Candidate.updateOne({ _id: candidateId }, { $inc: { votes: 1 } });
+    }
 
     return NextResponse.json({
       message: "Vote cast successfully.",

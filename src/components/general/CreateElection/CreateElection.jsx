@@ -566,6 +566,25 @@ export default function CreateElectionForm() {
                               />
                             </div>
                           ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const currentMembers = form.getValues(
+                              `candidates.${candidateIndex}.members`
+                            );
+                            form.setValue(
+                              `candidates.${candidateIndex}.members`,
+                              [
+                                ...currentMembers,
+                                { name: "", image: "", role: "" },
+                              ]
+                            );
+                          }}
+                        >
+                          <Plus className="mr-1 h-4 w-4" /> Add Member
+                        </Button>
                       </div>
 
                       <div className="space-y-2">

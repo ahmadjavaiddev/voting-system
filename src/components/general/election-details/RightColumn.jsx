@@ -25,6 +25,7 @@ const RightColumn = ({ election, onVoteSuccess }) => {
 
   const [selectedCandidate, setSelectedCandidate] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedMember, setSelectedMember] = useState("");
   const [isVoting, setIsVoting] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -54,6 +55,7 @@ const RightColumn = ({ election, onVoteSuccess }) => {
       const response = await axios.post("/api/vote", {
         electionId: election._id,
         candidateId: selectedCandidate,
+        memberId: selectedMember || null,
         userDescriptor: capturedDescriptor,
       });
 
@@ -64,7 +66,7 @@ const RightColumn = ({ election, onVoteSuccess }) => {
         setShowSuccessDialog(true);
         setCapturedDescriptor(null);
         setErrorMessage("");
-        
+
         // Refresh election data to show updated vote counts
         if (onVoteSuccess) {
           onVoteSuccess();
@@ -143,86 +145,111 @@ const RightColumn = ({ election, onVoteSuccess }) => {
           <CardContent>
             <RadioGroup
               value={selectedCandidate}
-              onValueChange={setSelectedCandidate}
+              onValueChange={(val) => {
+                setSelectedCandidate(val);
+                setSelectedMember("");
+              }}
               className="space-y-4"
             >
-              {election.candidates?.map((candidate) => (
-                <div
-                  key={candidate._id}
-                  className={`relative rounded-lg border p-4 transition-all hover:bg-accent cursor-pointer ${
-                    selectedCandidate === candidate._id
-                      ? "border-primary ring-1 ring-primary"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedCandidate(candidate._id)}
-                >
-                  <RadioGroupItem
-                    value={candidate._id}
-                    id={candidate._id}
-                    checked={selectedCandidate === candidate._id}
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute right-4 top-4"
-                  />
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={candidate.image}
-                        alt={candidate.name}
-                        className="h-8 w-8 rounded-full"
-                      />
-                      <h3 className="font-medium">{candidate.name}</h3>
-                    </div>
-                    <p className="text-sm italic text-muted-foreground">
-                      "{candidate.slogan}"
-                    </p>
-                    <div>
-                      <h4 className="text-xs font-medium uppercase text-muted-foreground">
-                        Key Members
-                      </h4>
-                      <ul className="mt-1 text-sm">
-                        {candidate.members?.map((member, index) => (
-                          <li
-                            key={index}
-                            className="flex items-start gap-2 text-sm"
-                          >
-                            <img
-                              src={member.image}
-                              alt={member.name}
-                              className="h-4 w-4 rounded-full"
-                            />
-                            <span>{member.name}</span>
-                            <span className="text-xs text-muted-foreground">
-                              ({member.role})
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium uppercase text-muted-foreground">
-                        Platform
-                      </h4>
-                      <ul className="mt-1 space-y-1">
-                        {candidate.platform?.map((point, index) => (
-                          <li
-                            key={index}
-                            className="flex items-start gap-2 text-sm"
-                          >
-                            <ThumbsUp className="mt-0.5 h-3 w-3 flex-shrink-0 text-muted-foreground" />
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
+              {election.candidates?.map((candidate) => {
+                const isSelected = selectedCandidate === candidate._id;
+                return (
+                  <div
+                    key={candidate._id}
+                    className={`relative rounded-lg border p-4 transition-all hover:bg-accent cursor-pointer ${
+                      isSelected ? "border-primary ring-1 ring-primary" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedCandidate(candidate._id);
+                      setSelectedMember("");
+                    }}
+                  >
+                    <RadioGroupItem
+                      value={candidate._id}
+                      id={candidate._id}
+                      checked={isSelected}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute right-4 top-4"
+                    />
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={candidate.image}
+                          alt={candidate.name}
+                          className="h-8 w-8 rounded-full"
+                        />
+                        <h3 className="font-medium">{candidate.name}</h3>
+                      </div>
+                      <p className="text-sm italic text-muted-foreground">
+                        "{candidate.slogan}"
+                      </p>
+                      <div>
+                        <h4 className="text-xs font-medium uppercase text-muted-foreground">
+                          Key Members (choose one)
+                        </h4>
+                        <ul className="mt-1 text-sm grid gap-1">
+                          {candidate.members?.map((member) => {
+                            const memberSelected =
+                              selectedMember === member._id;
+                            return (
+                              <li
+                                key={member._id}
+                                className={`flex items-center gap-2 text-sm rounded px-2 py-1 cursor-pointer border ${
+                                  memberSelected
+                                    ? "bg-primary/10 border-primary"
+                                    : "hover:bg-accent"
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedCandidate(candidate._id);
+                                  setSelectedMember(member._id);
+                                }}
+                              >
+                                <img
+                                  src={member.image}
+                                  alt={member.name}
+                                  className="h-5 w-5 rounded-full"
+                                />
+                                <span>{member.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  ({member.role})
+                                </span>
+                                {memberSelected && (
+                                  <span className="ml-auto text-xs text-primary font-medium">
+                                    Selected
+                                  </span>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-medium uppercase text-muted-foreground">
+                          Platform
+                        </h4>
+                        <ul className="mt-1 space-y-1">
+                          {candidate.platform?.map((point, index) => (
+                            <li
+                              key={index}
+                              className="flex items-start gap-2 text-sm"
+                            >
+                              <ThumbsUp className="mt-0.5 h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                              <span>{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </RadioGroup>
           </CardContent>
           <CardFooter>
             <Button
               className="w-full"
-              disabled={!selectedCandidate}
+              disabled={!selectedCandidate || !selectedMember}
               onClick={() => setShowFaceAuthDialog(true)}
             >
               Submit Vote
@@ -245,6 +272,7 @@ const RightColumn = ({ election, onVoteSuccess }) => {
         showConfirmDialog={showConfirmDialog && isFaceAuthenticated}
         setShowConfirmDialog={setShowConfirmDialog}
         selectedCandidate={selectedCandidate}
+        selectedMember={selectedMember}
         election={election}
         isVoting={isVoting}
         handleVoteSubmit={handleVoteSubmit}

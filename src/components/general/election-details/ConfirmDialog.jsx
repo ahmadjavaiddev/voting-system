@@ -13,6 +13,7 @@ const ConfirmDialog = ({
   showConfirmDialog,
   setShowConfirmDialog,
   selectedCandidate,
+  selectedMember,
   election,
   isVoting,
   handleVoteSubmit,
@@ -39,6 +40,18 @@ const ConfirmDialog = ({
                 }
               </span>
             </h3>
+            {selectedMember && (
+              <p className="mt-2 text-sm">
+                Member:{" "}
+                <span className="font-medium">
+                  {
+                    election?.candidates
+                      ?.find((c) => c._id === selectedCandidate)
+                      ?.members?.find((m) => m._id === selectedMember)?.name
+                  }
+                </span>
+              </p>
+            )}
             <p className="mt-2 text-sm text-muted-foreground">
               By confirming, you agree that you are eligible to vote in this
               election and are casting your vote voluntarily.
