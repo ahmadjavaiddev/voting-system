@@ -133,7 +133,7 @@ function RegisterForm() {
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="John Doe"
                     className="pl-10"
                     {...form.register("name")}
                   />
@@ -152,7 +152,7 @@ function RegisterForm() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="john.doe@example.com"
                     className="pl-10"
                     {...form.register("email")}
                   />
@@ -203,7 +203,7 @@ function RegisterForm() {
                   <Input
                     id="cnic"
                     type="text"
-                    placeholder="Enter your CNIC"
+                    placeholder="35202-1234567-1"
                     className="pl-10"
                     {...form.register("cnic")}
                   />
@@ -222,7 +222,7 @@ function RegisterForm() {
                   <Input
                     id="phone"
                     type="text"
-                    placeholder="Enter your phone number"
+                    placeholder="0312-1234567"
                     className="pl-10"
                     {...form.register("phone")}
                   />
