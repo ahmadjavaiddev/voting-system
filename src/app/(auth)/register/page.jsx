@@ -13,6 +13,7 @@ import {
   IdCard,
   Vote,
   Shield,
+  Phone as PhoneIcon,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,10 @@ const registerSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   cnic: z.string().min(5, "CNIC is required"),
+  phone: z
+    .string()
+    .min(7, "Phone is required")
+    .regex(/^[0-9+\-() ]+$/, "Invalid phone number format"),
   faceDescriptor: z.string().min(1, "Face authentication is required"),
 });
 
@@ -58,6 +63,7 @@ function RegisterForm() {
       email: "",
       password: "",
       cnic: "",
+      phone: "",
       faceDescriptor: "",
     },
   });
@@ -205,6 +211,25 @@ function RegisterForm() {
                 {form.formState.errors.cnic && (
                   <p className="text-sm text-red-500">
                     {form.formState.errors.cnic.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <div className="relative">
+                  <PhoneIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="text"
+                    placeholder="Enter your phone number"
+                    className="pl-10"
+                    {...form.register("phone")}
+                  />
+                </div>
+                {form.formState.errors.phone && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.phone.message}
                   </p>
                 )}
               </div>

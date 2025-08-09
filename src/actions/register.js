@@ -9,11 +9,16 @@ export async function registerUser(prevState, formData) {
   try {
     // Convert FormData to plain object
     const data = Object.fromEntries(formData.entries());
-    const { name, email, password, cnic, faceDescriptor } = data;
+    const { name, email, password, cnic, phone, faceDescriptor } = data;
 
     // Validate required fields
-    if (!name || !email || !password || !cnic) {
+    if (!name || !email || !password || !cnic || !phone) {
       return "All fields are required.";
+    }
+    // Basic phone normalization (remove non-digits) and simple validation
+    const normalizedPhone = phone.replace(/[^\d+]/g, "");
+    if (normalizedPhone.length < 7) {
+      return "Invalid phone number.";
     }
 
     if (!faceDescriptor) {
@@ -22,10 +27,65 @@ export async function registerUser(prevState, formData) {
 
     await dbConnect();
 
-    // Check for existing user
-    const existing = await User.findOne({ email }).lean();
+    // Check for existing user by email, phone or cnic
+    const existing = await User.findOne({
+      $or: [{ email }, { phone: normalizedPhone }, { cnic }],
+    }).lean();
     if (existing) {
-      return "Email already registered.";
+      if (existing.email === email) return "Email already registered.";
+      if (existing.phone === normalizedPhone)
+        return "Phone number already registered.";
+      if (existing.cnic === cnic) return "CNIC already registered.";
+      return "User already exists.";
+    }
+
+    // Parse the submitted face descriptor (stored client-side as JSON string of number array)
+    let submittedDescriptor;
+    try {
+      submittedDescriptor = JSON.parse(faceDescriptor);
+    } catch (err) {
+      return "Invalid face data provided.";
+    }
+    if (
+      !Array.isArray(submittedDescriptor) ||
+      submittedDescriptor.length < 64
+    ) {
+      return "Corrupted face data. Please recapture your face.";
+    }
+
+    // Helper to compute Euclidean distance WITHOUT importing heavy face-api server side
+    const euclideanDistance = (a, b) => {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length)
+        return Number.MAX_VALUE;
+      let sum = 0;
+      for (let i = 0; i < a.length; i++) {
+        const d = a[i] - b[i];
+        sum += d * d;
+      }
+      return Math.sqrt(sum);
+    };
+
+    // Threshold: typical face-api.js default ~0.6; we choose a bit stricter (0.5) to reduce duplicates
+    const FACE_DUPLICATE_THRESHOLD = 0.5;
+
+    // Stream through existing user face descriptors and compare
+    // (Projection to only needed field keeps memory lower.)
+    const existingUsersWithFace = await User.find(
+      { faceId: { $ne: null } },
+      { faceId: 1 }
+    ).lean();
+    for (const u of existingUsersWithFace) {
+      try {
+        const ref = JSON.parse(u.faceId);
+        if (Array.isArray(ref) && ref.length === submittedDescriptor.length) {
+          const dist = euclideanDistance(ref, submittedDescriptor.map(Number));
+          if (dist < FACE_DUPLICATE_THRESHOLD) {
+            return "A user with a very similar face is already registered.";
+          }
+        }
+      } catch (e) {
+        // Ignore malformed stored data
+      }
     }
 
     // Hash password
@@ -35,6 +95,7 @@ export async function registerUser(prevState, formData) {
       email,
       password: hashed,
       cnic,
+      phone: normalizedPhone,
       isVerified: false,
       isApproved: false,
       role: "user",
