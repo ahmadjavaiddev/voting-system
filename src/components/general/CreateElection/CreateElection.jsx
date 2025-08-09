@@ -410,6 +410,25 @@ export default function CreateElectionForm() {
                           }{" "}
                           Members
                         </Badge>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={candidateFields.length <= 2}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (candidateFields.length > 2) {
+                              removeCandidate(candidateIndex);
+                            }
+                          }}
+                          title={
+                            candidateFields.length <= 2
+                              ? "At least 2 candidates required"
+                              : "Remove candidate"
+                          }
+                        >
+                          <Trash2 className="h-4 w-4 text-red-600" />
+                        </Button>
                         <ChevronDown className="h-4 w-4" />
                       </div>
                     </div>
@@ -514,8 +533,41 @@ export default function CreateElectionForm() {
                           .map((member, memberIndex) => (
                             <div
                               key={memberIndex}
-                              className="flex flex-col md:flex-row gap-2 mb-2 border p-2 rounded"
+                              className="relative flex flex-col md:flex-row gap-2 mb-2 border p-2 rounded"
                             >
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white shadow"
+                                disabled={
+                                  form.getValues(
+                                    `candidates.${candidateIndex}.members`
+                                  ).length <= 1
+                                }
+                                onClick={() => {
+                                  const currentMembers = form.getValues(
+                                    `candidates.${candidateIndex}.members`
+                                  );
+                                  if (currentMembers.length > 1) {
+                                    const updated = [...currentMembers];
+                                    updated.splice(memberIndex, 1);
+                                    form.setValue(
+                                      `candidates.${candidateIndex}.members`,
+                                      updated
+                                    );
+                                  }
+                                }}
+                                title={
+                                  form.getValues(
+                                    `candidates.${candidateIndex}.members`
+                                  ).length <= 1
+                                    ? "At least 1 member required"
+                                    : "Remove member"
+                                }
+                              >
+                                <Trash2 className="h-3 w-3 text-red-600" />
+                              </Button>
                               <FormField
                                 control={form.control}
                                 name={`candidates.${candidateIndex}.members.${memberIndex}.name`}
