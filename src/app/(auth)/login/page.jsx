@@ -152,6 +152,7 @@ function LoginForm() {
               <Button variant="link" className="text-sm text-muted-foreground">
                 Forgot your password?
               </Button>
+              <p>Contact us at support@danishjavaid.site</p>
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
