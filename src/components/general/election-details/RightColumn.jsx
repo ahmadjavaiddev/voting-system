@@ -172,29 +172,35 @@ const RightColumn = ({ election, onVoteSuccess }) => {
                       className="absolute right-4 top-4"
                     />
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <img
                           src={candidate.image}
                           alt={candidate.name}
-                          className="h-8 w-8 rounded-full"
+                          className="h-14 w-14 md:h-16 md:w-16 rounded-full object-cover border shadow-sm"
+                          loading="lazy"
                         />
-                        <h3 className="font-medium">{candidate.name}</h3>
+                        <div className="min-w-0">
+                          <h3 className="font-medium text-base md:text-lg leading-tight truncate">{candidate.name}</h3>
+                          <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block line-clamp-1">
+                            {candidate.slogan}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-sm italic text-muted-foreground">
+                      <p className="text-sm italic text-muted-foreground sm:hidden">
                         "{candidate.slogan}"
                       </p>
                       <div>
                         <h4 className="text-xs font-medium uppercase text-muted-foreground">
                           Key Members (choose one)
                         </h4>
-                        <ul className="mt-1 text-sm grid gap-1">
+                        <ul className="mt-2 text-sm grid gap-2 sm:grid-cols-2">
                           {candidate.members?.map((member) => {
                             const memberSelected =
                               selectedMember === member._id;
                             return (
                               <li
                                 key={member._id}
-                                className={`flex items-center gap-2 text-sm rounded px-2 py-1 cursor-pointer border ${
+                                className={`flex items-center gap-3 text-sm rounded px-2 py-2 cursor-pointer border transition ${
                                   memberSelected
                                     ? "bg-primary/10 border-primary"
                                     : "hover:bg-accent"
@@ -208,7 +214,8 @@ const RightColumn = ({ election, onVoteSuccess }) => {
                                 <img
                                   src={member.image}
                                   alt={member.name}
-                                  className="h-5 w-5 rounded-full"
+                                  className="h-8 w-8 rounded-full object-cover border"
+                                  loading="lazy"
                                 />
                                 <span>{member.name}</span>
                                 <span className="text-xs text-muted-foreground">
