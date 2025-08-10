@@ -33,11 +33,12 @@ const ResultsVisualization = ({ selectedElection }) => {
             className="space-y-2 shadow-sm p-4 bg-muted/20 rounded-lg border border-muted"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <img
                   src={candidate.image}
                   alt={candidate.name}
-                  className="rounded-full h-10 w-10 object-cover border border-muted/30 shadow-sm shadow-muted/20"
+                  loading="lazy"
+                  className="rounded-full h-14 w-14 md:h-16 md:w-16 object-cover border border-muted/40 shadow-sm"
                 />
                 <span className="font-medium flex items-center gap-2">
                   {candidate.name}
@@ -106,7 +107,7 @@ const ResultsVisualization = ({ selectedElection }) => {
                 <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2">
                   Member Vote Breakdown
                 </h4>
-                <ul className="space-y-2">
+                <ul className="grid gap-2 sm:grid-cols-2">
                   {candidate.members.map((m) => {
                     const mv = m.votes || 0;
                     const pctWithinCandidate = candidate.votes
@@ -115,12 +116,13 @@ const ResultsVisualization = ({ selectedElection }) => {
                     return (
                       <li
                         key={m._id}
-                        className="flex items-center gap-3 text-sm bg-white/40 dark:bg-white/5 border rounded p-2"
+                        className="flex items-center gap-4 text-sm bg-white/60 dark:bg-white/5 border rounded p-2 h-full"
                       >
                         <img
                           src={m.image}
                           alt={m.name}
-                          className="h-6 w-6 rounded-full object-cover border"
+                          loading="lazy"
+                          className="h-10 w-10 rounded-full object-cover border shadow"
                         />
                         <div className="flex-1">
                           <div className="flex justify-between">
